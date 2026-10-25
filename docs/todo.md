@@ -1,6 +1,6 @@
 # TODO — entrega e desenvolvimento
 
-**Revisão:** 23/10/2026. Marcar conclusão somente com artefato ou validação correspondente.
+**Revisão:** 25/10/2026. Marcar conclusão somente com artefato ou validação correspondente.
 
 ## Etapa 1 — identificação e concepção
 
@@ -17,22 +17,22 @@
 ## Etapa 1 — arquitetura e modelagem
 
 - [x] Registrar backend REST e frontend separado.
-- [ ] Definir classes e representação de reserva/hospedagem.
-- [ ] Produzir UML com atributos tipados, métodos principais, relacionamentos, cardinalidades e opcionalidade.
-- [ ] Conferir UML contra requisitos, histórico e indisponibilidades.
-- [ ] Preencher dicionário: tipos Java/SQL, nulabilidade, PK, FK, unicidade e restrições.
-- [ ] Documentar anotações JPA, lado proprietário, cascatas e exclusão de cada associação.
+- [x] Definir classes e representação de reserva/hospedagem.
+- [x] Produzir UML com atributos tipados, métodos principais, relacionamentos, cardinalidades e opcionalidade.
+- [x] Conferir UML contra requisitos, histórico e indisponibilidades.
+- [x] Preencher dicionário: tipos Java/SQL, nulabilidade, PK, FK, unicidade e restrições.
+- [x] Documentar anotações JPA, lado proprietário, cascatas e exclusão de cada associação.
 
 ## Etapa 1 — persistência JPA
 
 - [x] Incluir dependências JPA e H2.
 - [x] Configurar H2 em memória no perfil `dev`.
-- [ ] Implementar no mínimo cinco entidades de domínio com `@Entity` e identificadores.
-- [ ] Mapear os relacionamentos necessários com anotações JPA adequadas.
-- [ ] Criar repositórios com `JpaRepository` para as entidades persistidas.
-- [ ] Implementar restrições de integridade coerentes com a preservação de histórico.
-- [ ] Validar gravação, leitura, associações e restrições com testes de integração relevantes.
-- [ ] Demonstrar persistência e manter UML, dicionário e código consistentes.
+- [x] Implementar no mínimo cinco entidades de domínio com `@Entity` e identificadores.
+- [x] Mapear os relacionamentos necessários com anotações JPA adequadas.
+- [x] Criar repositórios com `JpaRepository` para as entidades persistidas.
+- [x] Implementar restrições de integridade coerentes com a preservação de histórico.
+- [x] Validar gravação, leitura, associações e restrições com testes de integração relevantes.
+- [x] Demonstrar persistência (console H2 e dados de exemplo no perfil `dev`) e manter UML, dicionário e código consistentes.
 
 ## Etapa 1 — execução e revisão
 
@@ -40,7 +40,7 @@
 - [x] Documentar execução no Eclipse e IntelliJ IDEA.
 - [ ] Restaurar `.mvn/wrapper/maven-wrapper.properties` e demais arquivos necessários ao Wrapper.
 - [ ] Validar execução a partir de clone limpo, com JDK 21 e perfil `dev`.
-- [ ] Executar e registrar testes após implementar persistência.
+- [x] Executar e registrar testes após implementar persistência.
 - [ ] Revisar identificação da equipe, links e artefatos obrigatórios antes da submissão.
 
 ## Evolução do produto — além do foco da Etapa 1

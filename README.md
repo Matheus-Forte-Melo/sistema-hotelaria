@@ -6,7 +6,7 @@ O nome é provisório. Este repositório contém o backend Spring Boot; o fronte
 
 ## Estado atual
 
-A base permite iniciar o desenvolvimento, mas a Etapa 1 ainda não está concluída. Existem inicialização Spring Boot, configuração H2 e healthcheck público. Faltam UML, entidades de domínio, relacionamentos e repositórios JPA. Consulte o [TODO](docs/todo.md) e o [contexto](docs/context.md).
+A camada de persistência da Etapa 1 está implementada: nove entidades JPA com relacionamentos, repositórios `JpaRepository` e testes de integração no H2. O diagrama de classes UML e o dicionário de dados estão no [documento técnico](docs/documentacao-tecnica.md#3-arquitetura-e-modelagem-de-dados). Serviços e endpoints de negócio ainda não existem. Consulte o [TODO](docs/todo.md) e o [contexto](docs/context.md).
 
 ## Identificação da equipe
 
@@ -74,11 +74,11 @@ Resposta esperada: HTTP `200`, com os campos abaixo, cuja ordem pode variar:
 }
 ```
 
-O healthcheck confirma que a API responde; não verifica consultas ao banco. A raiz `/` não contém frontend. A segurança libera `/api/health` e exige autenticação nas demais rotas; login por e-mail e perfis de usuário ainda não estão implementados.
+O healthcheck confirma que a API responde; não verifica consultas ao banco. A raiz `/` não contém frontend. A segurança libera `/api/health` (e `/h2-console` no perfil `dev`) e exige autenticação nas demais rotas; login por e-mail e perfis de usuário ainda não estão implementados.
 
 ## Banco, terminal e testes
 
-`application-dev.properties` configura `jdbc:h2:mem:hotelaria` e `ddl-auto=create-drop`. As tabelas serão geradas quando houver entidades. Os dados desaparecem ao encerrar a aplicação; essa configuração não atende à preservação de histórico e backup da versão final.
+`application-dev.properties` configura `jdbc:h2:mem:hotelaria` e `ddl-auto=create-drop`. O Hibernate gera as tabelas a partir das entidades ao iniciar, e a classe `DadosIniciaisDev` carrega dados fictícios de demonstração. Para consultar as tabelas, abra `http://localhost:8080/h2-console` com JDBC URL `jdbc:h2:mem:hotelaria`, usuário `sa` e senha vazia. O console só fica disponível no perfil `dev`. Os dados desaparecem ao encerrar a aplicação; essa configuração não atende à preservação de histórico e backup da versão final.
 
 Com JDK 21 e Maven instalado:
 

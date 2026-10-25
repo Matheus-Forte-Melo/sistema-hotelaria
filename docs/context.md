@@ -1,6 +1,6 @@
 # Contexto do trabalho
 
-**Última revisão:** 23/10/2026.
+**Última revisão:** 25/10/2026.
 
 ## Objetivo e decisões
 
@@ -25,7 +25,10 @@ Referências: [escopo](escopo.md), [requisitos](requisitos.md), [documento técn
 | Perfil dev | H2 em memória, `create-drop`, SQL no log e `open-in-view=false` |
 | Healthcheck | `GET /api/health`, com `status=UP` e `message=API Funcional! :3` |
 | Segurança inicial | Libera `/api/health` e exige autenticação nas demais rotas; não implementa login por e-mail ou autorização por perfil |
-| Teste inicial | Somente `contextLoads`, sem cobertura de regras de negócio ou persistência de entidades |
+| Modelo de domínio | Nove entidades em `model`: Funcionario, Bloco, Andar, Quarto, Hospede, Reserva, Indisponibilidade, CorrecaoHistorico e CorrecaoIndisponibilidade, além dos enums Perfil, SituacaoReserva, TipoDocumento e FaixaEtaria |
+| Repositórios | Um `JpaRepository` por entidade em `repository`, com consultas de conflito, sobreposição e lock pessimista do quarto |
+| Testes | `ReservaTest` (regras da reserva), `PersistenciaJpaTest` (`@DataJpaTest` no H2) e `contextLoads`: `IndisponibilidadeTest`: 26 testes passando em 25/10/2026 |
+| Demonstração | No perfil `dev`, `DadosIniciaisDev` carrega dados fictícios e o console H2 fica em `/h2-console` |
 
 O usuário informou que a aplicação está rodando. Nesta revisão documental, o código foi inspecionado, mas não foi executado novo build ou teste: o terminal usa Java 17, não há Maven no PATH e falta `.mvn/wrapper`. O JDK e Maven da IDE podem ser diferentes.
 
@@ -33,9 +36,9 @@ A dependência H2 Console não significa que exista console configurado e libera
 
 ## O que falta
 
-Ainda não existem entidades `@Entity`, interfaces `JpaRepository`, serviços de domínio, endpoints de negócio, UML ou dicionário de dados preenchido. Faltam também autenticação funcional, autorização por perfil, frontend, integração CORS, migrações e implantação.
+Entidades, repositórios, UML e dicionário de dados existem (seção 3 do [documento técnico](documentacao-tecnica.md)). Ainda não existem serviços de domínio nem endpoints de negócio. Faltam também autenticação funcional, autorização por perfil, frontend, integração CORS, migrações e implantação.
 
-As dependências de JPA instaladas não satisfazem, sozinhas, a exigência acadêmica de pelo menos cinco entidades persistidas com relacionamentos e repositórios.
+Falta configurar a zona de horário do hotel (RN01); os dados de exemplo usam `America/Sao_Paulo`.
 
 ## Contextos importantes para modelagem
 
@@ -50,6 +53,6 @@ As dependências de JPA instaladas não satisfazem, sozinhas, a exigência acad�
 
 ## Próximo passo
 
-Fechar domínio e UML antes das entidades. Candidatos para discussão: funcionário, bloco, andar, quarto, hóspede, reserva e indisponibilidade. Decidir se hospedagem será evolução da reserva ou entidade própria, e como registrar ocupantes e correções. São propostas, não um modelo aprovado ou implementado.
+O domínio foi fechado em 25/10/2026: **reserva e hospedagem são a mesma entidade**, cuja situação evolui com check-in e check-out (RN11). Ocupantes são um `@ManyToMany` sem papéis. Correções de estadia ficam em `CorrecaoHistorico`, e alterações de bloqueios passados em `CorrecaoIndisponibilidade`. As decisões e o diagrama estão na seção 3.1 do [documento técnico](documentacao-tecnica.md); revisar com a equipe.
 
-Depois, implementar entidades/repositórios, validar persistência e relacionamentos e atualizar a documentação. Manter o checklist fiel às evidências, sem marcar como implementado algo apenas descrito.
+Regras que envolvem só uma reserva estão na entidade `Reserva`. Os serviços devem implementar as que comparam registros: travar o quarto com `QuartoRepository.findByIdParaAtualizacao`, verificar `ReservaRepository.existeConflito` e `IndisponibilidadeRepository.existeSobreposicao`, impedir check-in em quarto ocupado e validar a identificação do quarto no bloco. Ao alterar entidades, atualizar diagrama, dicionário e testes juntos.

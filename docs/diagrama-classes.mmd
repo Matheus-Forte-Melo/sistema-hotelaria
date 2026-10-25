@@ -1,0 +1,174 @@
+---
+config:
+  layout: elk
+---
+classDiagram
+    direction TB
+
+    class Funcionario {
+        -Long id
+        -String nome
+        -String email
+        -String senhaHash
+        -Perfil perfil
+        -boolean ativo
+        -Instant criadoEm
+        +isAdministrador() boolean
+        +desativar() void
+        +ativar() void
+        +alterarSenhaHash(String) void
+    }
+
+    class Bloco {
+        -Long id
+        -String nome
+        -List~Andar~ andares
+    }
+
+    class Andar {
+        -Long id
+        -Integer numero
+        -List~Quarto~ quartos
+    }
+
+    class Quarto {
+        -Long id
+        -String identificacao
+        -String categoria
+        -int capacidade
+        -BigDecimal valorDiariaPadrao
+        -LocalDate ativadoEm
+        -LocalDate desativadoEm
+        +isAtivoEm(LocalDate) boolean
+        +comporta(int) boolean
+        +desativar(LocalDate) void
+        +alterarValorDiariaPadrao(BigDecimal) void
+    }
+
+    class Hospede {
+        -Long id
+        -String nome
+        -LocalDate dataNascimento
+        -String email
+        -String telefone
+        -TipoDocumento tipoDocumento
+        -String numeroDocumento
+        -Instant criadoEm
+        +idadeEm(LocalDate) int
+        +faixaEtariaEm(LocalDate) FaixaEtaria
+        +isAdultoEm(LocalDate) boolean
+        +informarDocumento(TipoDocumento, String) void
+    }
+
+    class Reserva {
+        -Long id
+        -int quantidadePessoas
+        -LocalDate dataEntradaPrevista
+        -LocalDate dataSaidaPrevista
+        -BigDecimal valorDiaria
+        -SituacaoReserva situacao
+        -Instant checkInEm
+        -Instant checkOutEm
+        -Instant canceladaEm
+        -String motivoCancelamento
+        -Instant criadaEm
+        -Long versao
+        +quantidadeDiarias() long
+        +valorPrevisto() BigDecimal
+        +sobrepoe(LocalDate, LocalDate) boolean
+        +incluiPernoite(LocalDate) boolean
+        +isListaCompleta() boolean
+        +quantidadeNaoIdentificada() int
+        +possuiAdultoIdentificadoEm(LocalDate) boolean
+        +isValidacaoAdultoPendente() boolean
+        +adicionarHospede(Hospede) void
+        +removerHospede(Hospede) void
+        +alterarPeriodo(LocalDate, LocalDate) void
+        +alterarQuantidadePessoas(int) void
+        +fazerCheckIn(Instant, ZoneId) void
+        +fazerCheckOut(Instant) void
+        +cancelar(Instant, String) void
+        +corrigirHorariosEfetivos(Instant, Instant, Funcionario, String) CorrecaoHistorico
+    }
+
+    class Indisponibilidade {
+        -Long id
+        -LocalDate inicio
+        -LocalDate fim
+        -String motivo
+        -Instant registradaEm
+        +sobrepoe(LocalDate, LocalDate) boolean
+        +abrange(LocalDate) boolean
+        +afetaPassado(LocalDate) boolean
+        +alterar(LocalDate, LocalDate, String, Funcionario, String, LocalDate) Optional~CorrecaoIndisponibilidade~
+    }
+
+    class CorrecaoHistorico {
+        -Long id
+        -String justificativa
+        -Instant checkInAnterior
+        -Instant checkOutAnterior
+        -Instant checkInNovo
+        -Instant checkOutNovo
+        -Instant corrigidaEm
+    }
+
+    class CorrecaoIndisponibilidade {
+        -Long id
+        -String justificativa
+        -LocalDate inicioAnterior
+        -LocalDate fimAnterior
+        -String motivoAnterior
+        -LocalDate inicioNovo
+        -LocalDate fimNovo
+        -String motivoNovo
+        -Instant corrigidaEm
+    }
+
+    class Perfil {
+        <<enumeration>>
+        ADMINISTRADOR
+        RECEPCIONISTA
+    }
+
+    class SituacaoReserva {
+        <<enumeration>>
+        CONFIRMADA
+        EM_ANDAMENTO
+        FINALIZADA
+        CANCELADA
+        +isAtiva() boolean
+    }
+
+    class TipoDocumento {
+        <<enumeration>>
+        CPF
+        RG
+        PASSAPORTE
+        OUTRO
+    }
+
+    class FaixaEtaria {
+        <<enumeration>>
+        CRIANCA
+        ADOLESCENTE
+        ADULTO
+        +daIdade(int)$ FaixaEtaria
+    }
+
+    Bloco "1" -- "0..*" Andar : possui
+    Andar "1" -- "0..*" Quarto : possui
+    Quarto "1" <-- "0..*" Reserva : reserva
+    Reserva "0..*" --> "0..*" Hospede : ocupantes
+    Reserva "1" -- "0..*" CorrecaoHistorico : correcoes
+    Quarto "1" <-- "0..*" Indisponibilidade : bloqueia
+    Indisponibilidade "1" -- "0..*" CorrecaoIndisponibilidade : correcoes
+    Funcionario "1" <-- "0..*" Reserva : criadaPor
+    Funcionario "1" <-- "0..*" Indisponibilidade : registradaPor
+    Funcionario "1" <-- "0..*" CorrecaoHistorico : autor
+    Funcionario "1" <-- "0..*" CorrecaoIndisponibilidade : autor
+
+    Funcionario ..> Perfil
+    Reserva ..> SituacaoReserva
+    Hospede ..> TipoDocumento
+    Hospede ..> FaixaEtaria
