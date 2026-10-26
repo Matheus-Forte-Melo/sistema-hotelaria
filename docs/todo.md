@@ -5,12 +5,10 @@
 ## Etapa 1 — identificação e concepção
 
 - [ ] Confirmar nome técnico/comercial do produto.
-- [ ] Preencher equipe no README: até cinco integrantes e exatamente um líder.
-- [ ] Preencher link da aplicação publicada antes da submissão.
+- [x] Identificar os cinco integrantes e o líder no README.
 - [x] Documentar problema, público-alvo e objetivo.
 - [x] Enumerar RF e regras de negócio em `requisitos.md`.
 - [x] Documentar RNF de segurança, banco e padrões REST.
-- [ ] Acrescentar RNF de desempenho com métrica, carga, volume de dados e ambiente acordados.
 - [x] Organizar documento técnico com o sumário da atividade.
 - [ ] Revisar e aprovar concepção e decisões com a equipe.
 
@@ -54,5 +52,5 @@
 - [ ] Implementar check-in, check-out, cancelamento e correções históricas.
 - [ ] Implementar consultas do mapa temporal, resumo do andar e detalhes.
 - [ ] Construir e integrar frontend separado.
-- [ ] Adotar banco persistente, migrações, backup e restauração.
+- [ ] Adotar banco persistente e migrações.
 - [ ] Validar cenários de aceite e preparar implantação e documentação operacional.

@@ -1,0 +1,39 @@
+@startuml 01-associacoes
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName DejaVu Sans
+skinparam defaultFontSize 16
+skinparam dpi 180
+skinparam classAttributeIconSize 0
+skinparam classBackgroundColor #F3F7FC
+skinparam classBorderColor #34516E
+skinparam ArrowColor #52677D
+skinparam nodesep 45
+skinparam ranksep 55
+hide circle
+hide empty members
+title Pernoite — associações e cardinalidades
+hide members
+class Andar <<Entity>>
+class Bloco <<Entity>>
+class CorrecaoHistorico <<Entity>>
+class CorrecaoIndisponibilidade <<Entity>>
+class Funcionario <<Entity>>
+class Hospede <<Entity>>
+class Indisponibilidade <<Entity>>
+class Quarto <<Entity>>
+class Reserva <<Entity>>
+Bloco "1" -- "0..*" Andar : andares / bloco
+Andar "1" -- "0..*" Quarto : quartos / andar
+Quarto "1" <-- "0..*" Reserva : quarto
+Reserva "0..*" --> "0..*" Hospede : hospedes
+Reserva "1" -- "0..*" CorrecaoHistorico : correcoes / reserva
+Quarto "1" <-- "0..*" Indisponibilidade : quarto
+Indisponibilidade "1" -- "0..*" CorrecaoIndisponibilidade : correcoes / indisponibilidade
+Funcionario "1" <-- "0..*" Reserva : criadaPor
+Funcionario "1" <-- "0..*" Indisponibilidade : registradaPor
+Funcionario "1" <-- "0..*" CorrecaoHistorico : autor
+Funcionario "1" <-- "0..*" CorrecaoIndisponibilidade : autor
+
+@enduml

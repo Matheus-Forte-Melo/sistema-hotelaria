@@ -10,17 +10,15 @@ A camada de persistência da Etapa 1 está implementada: nove entidades JPA com 
 
 ## Identificação da equipe
 
-Preencher antes da submissão: máximo de cinco integrantes, sendo um líder. Remova linhas não utilizadas.
+A equipe é composta por cinco integrantes:
 
-| Integrante | Nome completo | Matrícula | Papel |
-|---|---|---|---|
-| 1 | A preencher | A preencher | Líder |
-| 2 | A preencher | A preencher | Integrante |
-| 3 | A preencher | A preencher | Integrante |
-| 4 | A preencher | A preencher | Integrante |
-| 5 | A preencher | A preencher | Integrante |
-
-**Link da aplicação publicada:** a preencher antes da submissão. O endereço localhost não substitui esse link.
+| Nome completo | Papel |
+|---|---|
+| Matheus Forte de Melo | Líder |
+| Geison Carlos Melo | Integrante |
+| Luan Elizeu Santos | Integrante |
+| Jeferson Machado | Integrante |
+| Matheus Kuchenbecker | Integrante |
 
 ## Tecnologias e pré-requisitos
 
@@ -78,7 +76,7 @@ O healthcheck confirma que a API responde; não verifica consultas ao banco. A r
 
 ## Banco, terminal e testes
 
-`application-dev.properties` configura `jdbc:h2:mem:hotelaria` e `ddl-auto=create-drop`. O Hibernate gera as tabelas a partir das entidades ao iniciar, e a classe `DadosIniciaisDev` carrega dados fictícios de demonstração. Para consultar as tabelas, abra `http://localhost:8080/h2-console` com JDBC URL `jdbc:h2:mem:hotelaria`, usuário `sa` e senha vazia. O console só fica disponível no perfil `dev`. Os dados desaparecem ao encerrar a aplicação; essa configuração não atende à preservação de histórico e backup da versão final.
+`application-dev.properties` configura `jdbc:h2:mem:hotelaria` e `ddl-auto=create-drop`. O Hibernate gera as tabelas a partir das entidades ao iniciar, e a classe `DadosIniciaisDev` carrega dados fictícios de demonstração. Para consultar as tabelas, abra `http://localhost:8080/h2-console` com JDBC URL `jdbc:h2:mem:hotelaria`, usuário `sa` e senha vazia. O console só fica disponível no perfil `dev`. Os dados desaparecem ao encerrar a aplicação; essa configuração não atende à preservação de histórico da versão final.
 
 Com JDK 21 e Maven instalado:
 

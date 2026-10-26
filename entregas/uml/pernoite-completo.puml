@@ -1,0 +1,186 @@
+@startuml pernoite-completo
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName DejaVu Sans
+skinparam defaultFontSize 16
+skinparam dpi 180
+skinparam classAttributeIconSize 0
+skinparam classBackgroundColor #F3F7FC
+skinparam classBorderColor #34516E
+skinparam ArrowColor #52677D
+skinparam nodesep 45
+skinparam ranksep 55
+hide circle
+hide empty members
+class Andar <<Entity>> {
+  - id: Long
+  - bloco: Bloco
+  - numero: Integer
+  - quartos: List<Quarto>
+}
+class Bloco <<Entity>> {
+  - id: Long
+  - nome: String
+  - andares: List<Andar>
+}
+class CorrecaoHistorico <<Entity>> {
+  - id: Long
+  - reserva: Reserva
+  - autor: Funcionario
+  - justificativa: String
+  - checkInAnterior: Instant
+  - checkOutAnterior: Instant
+  - checkInNovo: Instant
+  - checkOutNovo: Instant
+  - corrigidaEm: Instant
+}
+class CorrecaoIndisponibilidade <<Entity>> {
+  - id: Long
+  - indisponibilidade: Indisponibilidade
+  - autor: Funcionario
+  - justificativa: String
+  - inicioAnterior: LocalDate
+  - fimAnterior: LocalDate
+  - motivoAnterior: String
+  - inicioNovo: LocalDate
+  - fimNovo: LocalDate
+  - motivoNovo: String
+  - corrigidaEm: Instant
+}
+class Funcionario <<Entity>> {
+  - id: Long
+  - nome: String
+  - email: String
+  - senhaHash: String
+  - perfil: Perfil
+  - ativo: boolean
+  - criadoEm: Instant
+  --
+  + isAdministrador(): boolean
+  + desativar(): void
+  + ativar(): void
+  + alterarSenhaHash(String): void
+}
+class Hospede <<Entity>> {
+  - id: Long
+  - nome: String
+  - dataNascimento: LocalDate
+  - email: String
+  - telefone: String
+  - tipoDocumento: TipoDocumento
+  - numeroDocumento: String
+  - criadoEm: Instant
+  --
+  + idadeEm(LocalDate): int
+  + faixaEtariaEm(LocalDate): FaixaEtaria
+  + isAdultoEm(LocalDate): boolean
+  + informarDocumento(TipoDocumento, String): void
+}
+class Indisponibilidade <<Entity>> {
+  - id: Long
+  - quarto: Quarto
+  - inicio: LocalDate
+  - fim: LocalDate
+  - motivo: String
+  - registradaPor: Funcionario
+  - registradaEm: Instant
+  - correcoes: List<CorrecaoIndisponibilidade>
+  --
+  + afetaPassado(LocalDate): boolean
+  + alterar(LocalDate, LocalDate, String,\n    Funcionario, String, LocalDate):\n    Optional<CorrecaoIndisponibilidade>
+  + sobrepoe(LocalDate, LocalDate): boolean
+  + abrange(LocalDate): boolean
+}
+class Quarto <<Entity>> {
+  - id: Long
+  - andar: Andar
+  - identificacao: String
+  - categoria: String
+  - capacidade: int
+  - valorDiariaPadrao: BigDecimal
+  - ativadoEm: LocalDate
+  - desativadoEm: LocalDate
+  --
+  + isAtivoEm(LocalDate): boolean
+  + comporta(int): boolean
+  + desativar(LocalDate): void
+  + alterarValorDiariaPadrao(BigDecimal): void
+}
+class Reserva <<Entity>> {
+  - id: Long
+  - quarto: Quarto
+  - hospedes: Set<Hospede>
+  - quantidadePessoas: int
+  - dataEntradaPrevista: LocalDate
+  - dataSaidaPrevista: LocalDate
+  - valorDiaria: BigDecimal
+  - situacao: SituacaoReserva
+  - checkInEm: Instant
+  - checkOutEm: Instant
+  - canceladaEm: Instant
+  - motivoCancelamento: String
+  - criadaPor: Funcionario
+  - criadaEm: Instant
+  - correcoes: List<CorrecaoHistorico>
+  - versao: Long
+  --
+  + quantidadeDiarias(): long
+  + valorPrevisto(): BigDecimal
+  + sobrepoe(LocalDate, LocalDate): boolean
+  + incluiPernoite(LocalDate): boolean
+  + isListaCompleta(): boolean
+  + quantidadeNaoIdentificada(): int
+  + possuiAdultoIdentificadoEm(LocalDate): boolean
+  + isValidacaoAdultoPendente(): boolean
+  + adicionarHospede(Hospede): void
+  + removerHospede(Hospede): void
+  + alterarPeriodo(LocalDate, LocalDate): void
+  + alterarQuantidadePessoas(int): void
+  + fazerCheckIn(Instant, ZoneId): void
+  + fazerCheckOut(Instant): void
+  + cancelar(Instant, String): void
+  + corrigirHorariosEfetivos(Instant, Instant, Funcionario, String): CorrecaoHistorico
+}
+enum FaixaEtaria {
+  CRIANCA
+  ADOLESCENTE
+  ADULTO
+  --
+  + {static} daIdade(int): FaixaEtaria
+}
+enum Perfil {
+  ADMINISTRADOR
+  RECEPCIONISTA
+}
+enum SituacaoReserva {
+  CONFIRMADA
+  EM_ANDAMENTO
+  FINALIZADA
+  CANCELADA
+  --
+  + isAtiva(): boolean
+}
+enum TipoDocumento {
+  CPF
+  RG
+  PASSAPORTE
+  OUTRO
+}
+Bloco "1" -- "0..*" Andar : andares / bloco
+Andar "1" -- "0..*" Quarto : quartos / andar
+Quarto "1" <-- "0..*" Reserva : quarto
+Reserva "0..*" --> "0..*" Hospede : hospedes
+Reserva "1" -- "0..*" CorrecaoHistorico : correcoes / reserva
+Quarto "1" <-- "0..*" Indisponibilidade : quarto
+Indisponibilidade "1" -- "0..*" CorrecaoIndisponibilidade : correcoes / indisponibilidade
+Funcionario "1" <-- "0..*" Reserva : criadaPor
+Funcionario "1" <-- "0..*" Indisponibilidade : registradaPor
+Funcionario "1" <-- "0..*" CorrecaoHistorico : autor
+Funcionario "1" <-- "0..*" CorrecaoIndisponibilidade : autor
+
+Funcionario ..> Perfil
+Reserva ..> SituacaoReserva
+Hospede ..> TipoDocumento
+Hospede ..> FaixaEtaria
+@enduml

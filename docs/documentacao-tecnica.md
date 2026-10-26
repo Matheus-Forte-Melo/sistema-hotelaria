@@ -2,7 +2,7 @@
 
 **Revisão:** 25/10/2026. **Situação:** em elaboração; UML, entidades e repositórios da Etapa 1 implementados e testados.
 
-Identificação da equipe e URL da aplicação: preencher no [README](../README.md), com no máximo cinco integrantes e um líder.
+Equipe: Matheus Forte de Melo (líder), Geison Carlos Melo, Luan Elizeu Santos, Jeferson Machado e Matheus Kuchenbecker. Consulte também o [README](../README.md).
 
 ## 1. Visão Geral do Projeto
 
@@ -30,9 +30,8 @@ A lista detalhada RF01–RF20 está na seção 3 de [Concepção e Requisitos](r
 
 RNF01–RNF11 estão na seção 5 de [Concepção e Requisitos](requisitos.md): segurança, banco relacional, transações, API REST em JSON, recuperação e validação, entre outros.
 
-**Pendente:** requisito mensurável de desempenho, com tempo de resposta, volume de dados, carga concorrente e ambiente de medição acordados. Não há valores quantitativos aprovados.
 
-H2 em memória é a configuração inicial de desenvolvimento. Migrações, persistência durável e backup permanecem requisitos para a evolução do produto e ainda não estão implementados.
+H2 em memória é a configuração inicial de desenvolvimento. Migrações e persistência durável permanecem requisitos para a evolução do produto e ainda não estão implementados.
 
 ## 3. Arquitetura e Modelagem de Dados
 

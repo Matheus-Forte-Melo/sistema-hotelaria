@@ -1,0 +1,63 @@
+@startuml 04-reserva
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName DejaVu Sans
+skinparam defaultFontSize 16
+skinparam dpi 180
+skinparam classAttributeIconSize 0
+skinparam classBackgroundColor #F3F7FC
+skinparam classBorderColor #34516E
+skinparam ArrowColor #52677D
+skinparam nodesep 45
+skinparam ranksep 55
+hide circle
+hide empty members
+title Pernoite — reserva e hospedagem
+class Reserva <<Entity>> {
+  - id: Long
+  - quarto: Quarto
+  - hospedes: Set<Hospede>
+  - quantidadePessoas: int
+  - dataEntradaPrevista: LocalDate
+  - dataSaidaPrevista: LocalDate
+  - valorDiaria: BigDecimal
+  - situacao: SituacaoReserva
+  - checkInEm: Instant
+  - checkOutEm: Instant
+  - canceladaEm: Instant
+  - motivoCancelamento: String
+  - criadaPor: Funcionario
+  - criadaEm: Instant
+  - correcoes: List<CorrecaoHistorico>
+  - versao: Long
+  --
+  + quantidadeDiarias(): long
+  + valorPrevisto(): BigDecimal
+  + sobrepoe(LocalDate, LocalDate): boolean
+  + incluiPernoite(LocalDate): boolean
+  + isListaCompleta(): boolean
+  + quantidadeNaoIdentificada(): int
+  + possuiAdultoIdentificadoEm(LocalDate): boolean
+  + isValidacaoAdultoPendente(): boolean
+  + adicionarHospede(Hospede): void
+  + removerHospede(Hospede): void
+  + alterarPeriodo(LocalDate, LocalDate): void
+  + alterarQuantidadePessoas(int): void
+  + fazerCheckIn(Instant, ZoneId): void
+  + fazerCheckOut(Instant): void
+  + cancelar(Instant, String): void
+  + corrigirHorariosEfetivos(Instant, Instant, Funcionario, String): CorrecaoHistorico
+}
+
+enum SituacaoReserva {
+  CONFIRMADA
+  EM_ANDAMENTO
+  FINALIZADA
+  CANCELADA
+  --
+  + isAtiva(): boolean
+}
+
+Reserva ..> SituacaoReserva
+@enduml

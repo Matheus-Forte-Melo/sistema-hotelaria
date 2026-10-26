@@ -1,0 +1,48 @@
+@startuml 02-estrutura
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName DejaVu Sans
+skinparam defaultFontSize 16
+skinparam dpi 180
+skinparam classAttributeIconSize 0
+skinparam classBackgroundColor #F3F7FC
+skinparam classBorderColor #34516E
+skinparam ArrowColor #52677D
+skinparam nodesep 45
+skinparam ranksep 55
+hide circle
+hide empty members
+title Pernoite — estrutura física
+class Bloco <<Entity>> {
+  - id: Long
+  - nome: String
+  - andares: List<Andar>
+}
+
+class Andar <<Entity>> {
+  - id: Long
+  - bloco: Bloco
+  - numero: Integer
+  - quartos: List<Quarto>
+}
+
+class Quarto <<Entity>> {
+  - id: Long
+  - andar: Andar
+  - identificacao: String
+  - categoria: String
+  - capacidade: int
+  - valorDiariaPadrao: BigDecimal
+  - ativadoEm: LocalDate
+  - desativadoEm: LocalDate
+  --
+  + isAtivoEm(LocalDate): boolean
+  + comporta(int): boolean
+  + desativar(LocalDate): void
+  + alterarValorDiariaPadrao(BigDecimal): void
+}
+
+Bloco "1" -down- "0..*" Andar
+Andar "1" -down- "0..*" Quarto
+@enduml

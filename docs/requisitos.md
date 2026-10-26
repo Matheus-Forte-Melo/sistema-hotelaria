@@ -139,10 +139,9 @@ Permitir ao administrador corrigir datas e horários efetivos de estadias encerr
 | **RNF04** | Validação e proteção | Validar entradas no servidor, utilizar consultas parametrizadas, limitar tentativas de autenticação e impedir exposição de senhas ou documentos completos em logs de aplicação. |
 | **RNF05** | Dados pessoais | Restringir dados de hóspedes aos funcionários autorizados. Cartões e totais do mapa não devem expor documentos ou contatos completos; esses dados ficam nos detalhes com acesso controlado. |
 | **RNF06** | Banco de dados | Utilizar banco relacional com chaves estrangeiras, migrações versionadas e transações nas operações críticas. PostgreSQL é a opção proposta; a escolha final será confirmada no planejamento técnico. |
-| **RNF07** | Integridade concorrente | A prevenção de conflitos deve ser garantida transacionalmente, sem depender apenas de validação na interface. Verificar com duas tentativas simultâneas de reserva para o mesmo quarto e período. |
+| **RNF07** | Integridade transacional | Executar as operações de criação, alteração e cancelamento de reservas em transações, com validação das regras de disponibilidade no backend e reversão das alterações em caso de falha. |
 | **RNF08** | API REST | Usar JSON, métodos HTTP coerentes com a operação, códigos de resposta adequados e formato consistente de erros. Listagens devem oferecer paginação e filtros. Documentar endpoints e formatos de datas. |
 | **RNF09** | Consistência temporal | Usar uma referência de data e horário consistente por consulta. Cartões e agregações devem refletir o mesmo conjunto de dados; mudanças de dia devem descartar respostas atrasadas de consultas anteriores. |
-| **RNF10** | Recuperação | Prever backup diário e procedimento documentado de restauração. Demonstrar uma restauração em ambiente de teste antes da entrega. |
 | **RNF11** | Manutenção e validação | Manter instruções de instalação, configuração e execução. Automatizar testes das regras críticas de disponibilidade, capacidade, transições e cálculo temporal; validar visualmente o mapa por roteiro de aceite. |
 
 ## 6. Cenários essenciais de aceite

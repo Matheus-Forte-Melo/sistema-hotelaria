@@ -13,7 +13,7 @@
 | Patrocinador ou solicitante | A definir |
 | Responsável pelo projeto | A definir |
 | Responsável pela validação funcional | A definir |
-| Equipe de desenvolvimento | A definir |
+| Equipe de desenvolvimento | Matheus Forte de Melo (líder), Geison Carlos Melo, Luan Elizeu Santos, Jeferson Machado e Matheus Kuchenbecker |
 | Representante dos usuários da recepção | A definir |
 
 ## 2. Justificativa
@@ -78,9 +78,9 @@ Os limites detalhados constam no [documento de escopo](escopo.md), e as funciona
 | M3 — Base operacional | Acesso, estrutura física, hóspedes e reservas implementados, com validação de disponibilidade. | A definir |
 | M4 — Hospedagens e mapa | Check-in, check-out, navegação temporal, indicadores e histórico integrados. | A definir |
 | M5 — Homologação | Cenários essenciais aprovados e falhas impeditivas resolvidas. | A definir |
-| M6 — Entrega | Aplicação executável no ambiente acordado, documentação e demonstração de restauração disponibilizadas. | A definir |
+| M6 — Entrega | Aplicação executável no ambiente acordado, documentação e demonstração dos fluxos disponibilizadas. | A definir |
 
-O protótipo do mapa precede a implementação completa para validar cedo o principal diferencial do projeto. Datas e duração serão acordadas após a definição da equipe e de sua disponibilidade.
+O protótipo do mapa precede a implementação completa para validar cedo o principal diferencial do projeto. Datas e duração serão acordadas após a definição da disponibilidade da equipe.
 
 ## 8. Premissas
 
@@ -98,7 +98,7 @@ O protótipo do mapa precede a implementação completa para validar cedo o prin
 - Aplicar uma convenção diária de pernoite em consultas passadas e futuras; não incluir uma linha do tempo por hora.
 - Não tratar entradas e saídas individuais de hóspedes do mesmo quarto, hospedagens no mesmo dia ou transferências de quarto.
 - Proteger vínculos históricos restringindo alterações estruturais de quartos já utilizados.
-- Orçamento, equipe, prazo final e infraestrutura ainda não definidos; este termo não representa compromisso financeiro ou de entrega em uma data específica.
+- Orçamento, prazo final e infraestrutura ainda não definidos; este termo não representa compromisso financeiro ou de entrega em uma data específica.
 
 ## 10. Riscos iniciais e respostas
 
@@ -111,13 +111,13 @@ O protótipo do mapa precede a implementação completa para validar cedo o prin
 | Saídas não registradas ou datas incorretas | Divergência entre mapa e operação | Sinalizar pendências e disponibilizar correção controlada de datas efetivas. |
 | Alterações estruturais afetarem o histórico | Totais históricos inconsistentes | Preservar referências e restringir mudanças de localização e capacidade. |
 | Interface visual ficar carregada | Dificuldade de uso | Exibir uma grade simples do andar selecionado e detalhes sob demanda, com controles apenas de bloco, andar e data; validar em computador e tablet. |
-| Ausência de definições de equipe e prazo | Planejamento sem base | Definir responsáveis e estimativas antes de assumir uma data de entrega. |
+| Ausência de definições de prazo e distribuição de tarefas | Planejamento sem base | Distribuir responsabilidades e definir estimativas antes de assumir uma data de entrega. |
 
 ## 11. Recursos e orçamento
 
 Recursos previstos: equipe para análise, design, desenvolvimento e validação; repositório de código; ambiente de desenvolvimento e teste; banco relacional; e ambiente de hospedagem para disponibilização acordada.
 
-O orçamento será estimado após a escolha da infraestrutura e a definição da equipe. Nenhum valor ou contratação está aprovado por este documento.
+O orçamento será estimado após a escolha da infraestrutura e a estimativa de esforço. Nenhum valor ou contratação está aprovado por este documento.
 
 ## 12. Gestão e controle de mudanças
 
@@ -131,7 +131,7 @@ Pedidos de mudança devem registrar descrição, justificativa e impactos em esf
 - Cenários essenciais do documento de requisitos aprovados.
 - Mapa temporal validado como principal interface de acompanhamento da ocupação.
 - Nenhuma falha impeditiva aberta nos fluxos de reserva, check-in, check-out ou cálculo temporal.
-- Documentação de execução, configuração, backup e restauração entregue.
+- Documentação de execução e configuração entregue.
 - Pendências não impeditivas registradas e aceite final documentado pelo responsável funcional.
 
 ## 14. Aprovação

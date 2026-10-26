@@ -1,0 +1,69 @@
+@startuml 03-pessoas
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName DejaVu Sans
+skinparam defaultFontSize 16
+skinparam dpi 180
+skinparam classAttributeIconSize 0
+skinparam classBackgroundColor #F3F7FC
+skinparam classBorderColor #34516E
+skinparam ArrowColor #52677D
+skinparam nodesep 45
+skinparam ranksep 55
+hide circle
+hide empty members
+title Pernoite — funcionários e hóspedes
+class Funcionario <<Entity>> {
+  - id: Long
+  - nome: String
+  - email: String
+  - senhaHash: String
+  - perfil: Perfil
+  - ativo: boolean
+  - criadoEm: Instant
+  --
+  + isAdministrador(): boolean
+  + desativar(): void
+  + ativar(): void
+  + alterarSenhaHash(String): void
+}
+
+class Hospede <<Entity>> {
+  - id: Long
+  - nome: String
+  - dataNascimento: LocalDate
+  - email: String
+  - telefone: String
+  - tipoDocumento: TipoDocumento
+  - numeroDocumento: String
+  - criadoEm: Instant
+  --
+  + idadeEm(LocalDate): int
+  + faixaEtariaEm(LocalDate): FaixaEtaria
+  + isAdultoEm(LocalDate): boolean
+  + informarDocumento(TipoDocumento, String): void
+}
+
+enum Perfil {
+  ADMINISTRADOR
+  RECEPCIONISTA
+}
+enum TipoDocumento {
+  CPF
+  RG
+  PASSAPORTE
+  OUTRO
+}
+enum FaixaEtaria {
+  CRIANCA
+  ADOLESCENTE
+  ADULTO
+  --
+  + {static} daIdade(int): FaixaEtaria
+}
+
+Funcionario ..> Perfil
+Hospede ..> TipoDocumento
+Hospede ..> FaixaEtaria
+@enduml

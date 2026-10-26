@@ -1,0 +1,44 @@
+@startuml 06-correcoes
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName DejaVu Sans
+skinparam defaultFontSize 16
+skinparam dpi 180
+skinparam classAttributeIconSize 0
+skinparam classBackgroundColor #F3F7FC
+skinparam classBorderColor #34516E
+skinparam ArrowColor #52677D
+skinparam nodesep 45
+skinparam ranksep 55
+hide circle
+hide empty members
+title Pernoite — registros de correção
+class CorrecaoHistorico <<Entity>> {
+  - id: Long
+  - reserva: Reserva
+  - autor: Funcionario
+  - justificativa: String
+  - checkInAnterior: Instant
+  - checkOutAnterior: Instant
+  - checkInNovo: Instant
+  - checkOutNovo: Instant
+  - corrigidaEm: Instant
+}
+
+class CorrecaoIndisponibilidade <<Entity>> {
+  - id: Long
+  - indisponibilidade: Indisponibilidade
+  - autor: Funcionario
+  - justificativa: String
+  - inicioAnterior: LocalDate
+  - fimAnterior: LocalDate
+  - motivoAnterior: String
+  - inicioNovo: LocalDate
+  - fimNovo: LocalDate
+  - motivoNovo: String
+  - corrigidaEm: Instant
+}
+
+CorrecaoHistorico -[hidden]down- CorrecaoIndisponibilidade
+@enduml

@@ -1,0 +1,33 @@
+@startuml 05-indisponibilidade
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName DejaVu Sans
+skinparam defaultFontSize 16
+skinparam dpi 180
+skinparam classAttributeIconSize 0
+skinparam classBackgroundColor #F3F7FC
+skinparam classBorderColor #34516E
+skinparam ArrowColor #52677D
+skinparam nodesep 45
+skinparam ranksep 55
+hide circle
+hide empty members
+title Pernoite — bloqueios de quartos
+class Indisponibilidade <<Entity>> {
+  - id: Long
+  - quarto: Quarto
+  - inicio: LocalDate
+  - fim: LocalDate
+  - motivo: String
+  - registradaPor: Funcionario
+  - registradaEm: Instant
+  - correcoes: List<CorrecaoIndisponibilidade>
+  --
+  + afetaPassado(LocalDate): boolean
+  + alterar(LocalDate, LocalDate, String,\n    Funcionario, String, LocalDate):\n    Optional<CorrecaoIndisponibilidade>
+  + sobrepoe(LocalDate, LocalDate): boolean
+  + abrange(LocalDate): boolean
+}
+
+@enduml

@@ -11,7 +11,9 @@ Sistema interno de gestão de hospedagens, com mapa temporal por bloco, andar e 
 - H2 em memória no perfil Spring `dev`, somente nesta fase.
 - Spring Data JPA para persistência e Spring Security para segurança.
 - PostgreSQL permanece uma proposta para o banco persistente, não uma configuração existente.
-- Nome comercial, equipe, líder e URL publicada aguardam preenchimento.
+- Equipe: Matheus Forte de Melo (líder), Geison Carlos Melo, Luan Elizeu Santos, Jeferson Machado e Matheus Kuchenbecker.
+- Nome comercial a definir.
+- Por decisão da equipe em 25/10/2026, não incluir RNF de desempenho nem campo de link da aplicação na documentação atual.
 
 Referências: [escopo](escopo.md), [requisitos](requisitos.md), [documento técnico](documentacao-tecnica.md) e [TODO](todo.md).
 
