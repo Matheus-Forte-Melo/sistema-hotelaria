@@ -22,8 +22,8 @@ Revisão de 25/10/2026, baseada nas classes de `src/main/java/br/com/hotelaria/h
 Com Java, Graphviz e o JAR do PlantUML:
 
 ```bash
-java -Djava.awt.headless=true -jar plantuml.jar -charset UTF-8 -tpng 'entregas/uml/0*.puml'
-java -Djava.awt.headless=true -jar plantuml.jar -charset UTF-8 -tsvg entregas/uml/pernoite-completo.puml
+java -Djava.awt.headless=true -jar plantuml.jar -charset UTF-8 -tpng 'docs/legado/uml/0*.puml'
+java -Djava.awt.headless=true -jar plantuml.jar -charset UTF-8 -tsvg docs/legado/uml/pernoite-completo.puml
 ```
 
 Sintaxe: https://plantuml.com/class-diagram

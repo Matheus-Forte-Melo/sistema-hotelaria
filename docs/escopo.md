@@ -117,5 +117,5 @@ O histórico retrata fatos registrados, incluindo correções autorizadas. **Nã
 
 ## 8. Documentos relacionados
 
-- [Requisitos funcionais, não funcionais e regras de negócio](requisitos.md).
+- [Requisitos funcionais, não funcionais e regras de negócio](legado/requisitos.md).
 - [Termo de abertura do projeto](termo-de-abertura.md).

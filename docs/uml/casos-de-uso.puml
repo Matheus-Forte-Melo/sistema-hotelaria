@@ -1,0 +1,21 @@
+@startuml
+left to right direction
+title Pernoite — Operações da recepção
+actor "Recepcionista" as R
+rectangle "Gestão de reservas" {
+  usecase "Cadastrar e listar andares" as A
+  usecase "Cadastrar quartos" as Q
+  usecase "Consultar disponibilidade" as D
+  usecase "Criar ou editar reserva" as E
+  usecase "Buscar reserva e consultar detalhes" as B
+  usecase "Cancelar reserva" as C
+  usecase "Consultar mapa por andar e data" as M
+}
+R -- A
+R -- Q
+R -- D
+R -- E
+R -- B
+R -- C
+R -- M
+@enduml

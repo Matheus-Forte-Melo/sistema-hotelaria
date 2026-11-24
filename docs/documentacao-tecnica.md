@@ -4,6 +4,8 @@
 
 Equipe: Matheus Forte de Melo (líder), Geison Carlos Melo, Luan Elizeu Santos, Jeferson Machado e Matheus Kuchenbecker. Consulte também o [README](../README.md).
 
+Para a entrega após a revisão de escopo, consulte os [requisitos vigentes](requisitos.md) e os [diagramas revisados](uml/README.md). O dicionário e a seção 3.1 abaixo documentam a Etapa 1.
+
 ## 1. Visão Geral do Projeto
 
 ### 1.1 Nome do Produto
@@ -24,16 +26,28 @@ Uso interno por administradores e recepcionistas de um único estabelecimento. A
 
 ### 2.1 Requisitos Funcionais (RF01, RF02, ...)
 
-A lista detalhada RF01–RF20 está na seção 3 de [Concepção e Requisitos](requisitos.md). Inclui autenticação, funcionários, estrutura física, hóspedes, reservas, entradas/saídas, mapa temporal e correção de histórico. A seção 4 registra as regras de negócio e a seção 6 os cenários de aceite.
+A lista detalhada RF01–RF20 está na seção 3 de [Concepção e Requisitos](legado/requisitos.md). Inclui autenticação, funcionários, estrutura física, hóspedes, reservas, entradas/saídas, mapa temporal e correção de histórico. A seção 4 registra as regras de negócio e a seção 6 os cenários de aceite.
 
 ### 2.2 Requisitos Não Funcionais (RNF01, RNF02, ...)
 
-RNF01–RNF11 estão na seção 5 de [Concepção e Requisitos](requisitos.md): segurança, banco relacional, transações, API REST em JSON, recuperação e validação, entre outros.
+RNF01–RNF11 estão na seção 5 de [Concepção e Requisitos](legado/requisitos.md): segurança, banco relacional, transações, API REST em JSON, recuperação e validação, entre outros.
 
 
 H2 em memória é a configuração inicial de desenvolvimento. Migrações e persistência durável permanecem requisitos para a evolução do produto e ainda não estão implementados.
 
 ## 3. Arquitetura e Modelagem de Dados
+
+O backend adota **arquitetura em camadas com pacotes organizados por responsabilidade técnica**, sob `br.com.hotelaria.hotelaria`. É uma decisão da equipe compatível com Spring Boot. O framework também permite organizar pacotes por funcionalidade.
+
+| Pacote | Responsabilidade |
+|---|---|
+| `controller` | Receber requisições HTTP e devolver respostas. Hoje contém o healthcheck. |
+| `service` (previsto nas issues) | Coordenar casos de uso e transações, como validar a disponibilidade antes de gravar uma reserva. |
+| `repository` | Persistir entidades e consultar o banco via Spring Data JPA. |
+| `model` | Representar entidades e regras próprias do domínio, como calcular o valor da reserva. |
+| `config` e `exception` | Configuração da aplicação e exceções de negócio. |
+
+No fluxo de reserva, o controller recebe o pedido, o serviço aplica o caso de uso com as entidades e os repositórios consultam ou gravam os dados.
 
 Backend Java 21 com Spring Boot 4.1.2, Web MVC, Security e Spring Data JPA. Frontend separado consumindo a API REST. H2 em memória no perfil `dev`.
 
@@ -41,21 +55,21 @@ Organização prevista: controller → service → repository → banco, com DTO
 
 ### 3.1 Diagrama de Classes UML
 
-![Diagrama de classes UML](diagrama-classes.png)
+![Diagrama de classes UML](legado/diagrama-classes.png)
 
 O diagrama corresponde às classes em `src/main/java/br/com/hotelaria/hotelaria/model`. Getters, setters e construtores foram omitidos.
 
 | Arquivo | Uso |
 |---|---|
-| [diagrama-classes.mmd](diagrama-classes.mmd) | Código-fonte editável em [Mermaid](https://mermaid.js.org/syntax/classDiagram.html). Altere sempre este arquivo |
-| [diagrama-classes.pdf](diagrama-classes.pdf) | Versão para entrega e impressão |
-| [diagrama-classes.png](diagrama-classes.png) | Imagem exibida nesta seção e para colar em documentos |
+| [diagrama-classes.mmd](legado/diagrama-classes.mmd) | Código-fonte editável em [Mermaid](https://mermaid.js.org/syntax/classDiagram.html). Altere sempre este arquivo |
+| [diagrama-classes.pdf](legado/diagrama-classes.pdf) | Versão para entrega e impressão |
+| [diagrama-classes.png](legado/diagrama-classes.png) | Imagem exibida nesta seção e para colar em documentos |
 
 Para editar visualmente, cole o conteúdo do `.mmd` no [Mermaid Live Editor](https://mermaid.live). Depois de alterar, regenere o PDF e o PNG na raiz do projeto com o [mermaid-cli](https://github.com/mermaid-js/mermaid-cli):
 
 ```bash
-npx -p @mermaid-js/mermaid-cli@11.4.2 mmdc -i docs/diagrama-classes.mmd -o docs/diagrama-classes.pdf -b white --pdfFit
-npx -p @mermaid-js/mermaid-cli@11.4.2 mmdc -i docs/diagrama-classes.mmd -o docs/diagrama-classes.png -b white -s 2
+npx -p @mermaid-js/mermaid-cli@11.4.2 mmdc -i docs/legado/diagrama-classes.mmd -o docs/legado/diagrama-classes.pdf -b white --pdfFit
+npx -p @mermaid-js/mermaid-cli@11.4.2 mmdc -i docs/legado/diagrama-classes.mmd -o docs/legado/diagrama-classes.png -b white -s 2
 ```
 
 Leitura das cardinalidades: todo andar pertence a exatamente um bloco, e todo quarto a exatamente um andar. Toda reserva aponta para um quarto e para o funcionário que a criou. A lista de hóspedes pode estar vazia ou incompleta até o check-in (RN14). Correções e indisponibilidades sempre têm autor. Setas indicam associações unidirecionais; linhas sem seta são bidirecionais.

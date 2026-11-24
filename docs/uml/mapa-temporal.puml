@@ -1,0 +1,21 @@
+@startuml
+title Pernoite — Consulta da noite de um andar
+actor Recepcionista as R
+boundary "Mapa (React)" as UI
+boundary "Controller" as API
+control "Serviço do mapa" as S
+database "Repositórios JPA" as DB
+R -> UI : Seleciona andar e data
+UI -> API : Consulta o mapa do andar na data
+API -> S : Monta o mapa
+S -> DB : Busca todos os quartos do andar
+DB --> S : Quartos
+S -> DB : Busca reservas vigentes do andar\ncom entrada ≤ data < saída
+DB --> S : Reservas da noite
+S -> S : Associa reservas aos quartos\ne conta os reservados
+S --> API : Quartos, situações, detalhes e total
+API --> UI : Mapa do andar na data
+UI --> R : Grade e resumo
+R -> UI : Seleciona um quarto
+UI --> R : Detalhes da reserva ou indicação de quarto livre
+@enduml

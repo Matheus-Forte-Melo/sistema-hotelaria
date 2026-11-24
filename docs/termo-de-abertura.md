@@ -67,7 +67,7 @@ O mapa distinguirá fatos históricos de previsões: passado baseado nas estadia
 - Mapas 3D, plantas arquitetônicas e aplicativo móvel nativo.
 - Auditoria completa e reprodução do planejamento como era conhecido no passado.
 
-Os limites detalhados constam no [documento de escopo](escopo.md), e as funcionalidades e regras estão no [documento de requisitos](requisitos.md).
+Os limites detalhados constam no [documento de escopo](escopo.md), e as funcionalidades e regras estão no [documento de requisitos](legado/requisitos.md).
 
 ## 7. Entregas e marcos
 

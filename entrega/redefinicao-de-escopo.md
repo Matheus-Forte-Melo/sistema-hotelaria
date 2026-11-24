@@ -4,7 +4,11 @@
 
 Após consulta ao professor Leonardo Vitazik, a equipe redefiniu o escopo para viabilizar a entrega acadêmica. A orientação recebida foi concentrar o projeto em um CRUD com regras de negócio e uma visualização mais avançada. Para o Pernoite, a entrega passa a ser **gerenciar reservas de quartos e consultar essas reservas em um mapa temporal por andar**.
 
-Este documento define o que será demonstrado e avaliado nesta entrega. O [escopo original](../docs/escopo.md) e os [requisitos iniciais](../docs/requisitos.md) registram a proposta anterior.
+Este documento define o que será demonstrado e avaliado nesta entrega. O [escopo original](../docs/escopo.md) e os [requisitos iniciais](../docs/legado/requisitos.md) registram a proposta anterior.
+
+## Artefatos da revisão
+
+Os [requisitos vigentes](../docs/requisitos.md) associam cada funcionalidade às issues de backend e frontend. Os [diagramas UML revisados](../docs/uml/README.md) representam os casos de uso da recepção, as classes do domínio e a sequência de consulta do mapa temporal. O [índice do legado](../docs/legado/README.md) explica a mudança e reúne os requisitos e diagramas originais.
 
 ## Funcionalidades da entrega
 

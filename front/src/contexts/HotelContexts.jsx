@@ -1,36 +1,24 @@
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useContext } from 'react'
+import { useQuery } from '@tanstack/react-query'
+import { consultaEstrutura, consultaReservas } from '../data/consultas'
 
-const EstruturaContext = createContext(null)
-const ReservasContext = createContext(null)
-
-function useLista(repository) {
-  const [resultado, setResultado] = useState({ carregando: true })
-  useEffect(() => {
-    let ativo = true
-    setResultado({ carregando: true })
-    async function carregar() {
-      try {
-        const dados = await repository.listar()
-        if (ativo) setResultado({ dados })
-      } catch {
-        if (ativo) setResultado({ erro: true })
-      }
-    }
-    carregar()
-    return () => { ativo = false }
-  }, [repository])
-  return resultado
-}
+const RepositoriosContext = createContext(null)
 
 export function HotelProvider({ repositories, children }) {
-  const estrutura = useLista(repositories.estrutura)
-  const reservas = useLista(repositories.reservas)
-  return (
-    <EstruturaContext.Provider value={estrutura}>
-      <ReservasContext.Provider value={reservas}>{children}</ReservasContext.Provider>
-    </EstruturaContext.Provider>
-  )
+  return <RepositoriosContext.Provider value={repositories}>{children}</RepositoriosContext.Provider>
 }
 
-export const useEstrutura = () => useContext(EstruturaContext)
-export const useReservas = () => useContext(ReservasContext)
+function useLista(opcoes) {
+  const { data, isPending, isError } = useQuery(opcoes)
+  return { dados: data, carregando: isPending, erro: isError }
+}
+
+export function useEstrutura() {
+  const repositories = useContext(RepositoriosContext)
+  return useLista(consultaEstrutura(repositories))
+}
+
+export function useReservas() {
+  const repositories = useContext(RepositoriosContext)
+  return useLista(consultaReservas(repositories))
+}

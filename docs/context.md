@@ -15,7 +15,7 @@ Sistema interno de gestão de hospedagens, com mapa temporal por bloco, andar e 
 - Nome comercial a definir.
 - Por decisão da equipe em 25/10/2026, não incluir RNF de desempenho nem campo de link da aplicação na documentação atual.
 
-Referências: [escopo](escopo.md), [requisitos](requisitos.md), [documento técnico](documentacao-tecnica.md) e [TODO](todo.md).
+Referências: [escopo](escopo.md), [requisitos](legado/requisitos.md), [documento técnico](documentacao-tecnica.md) e [TODO](todo.md).
 
 ## O que existe
 

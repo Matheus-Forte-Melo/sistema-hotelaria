@@ -1,0 +1,36 @@
+@startuml
+title Pernoite — Modelo de domínio da entrega revisada
+hide empty members
+skinparam classAttributeIconSize 0
+class Andar {
+  id : Long
+  numero : Integer
+}
+class Quarto {
+  id : Long
+  identificacao : String
+  capacidade : int
+  diariaPadrao : BigDecimal
+}
+class Reserva {
+  id : Long
+  nomeHospede : String
+  entrada : LocalDate
+  saida : LocalDate
+  pessoas : int
+  diariaAcordada : BigDecimal
+  situacao : SituacaoReserva
+  valorPrevisto() : BigDecimal
+}
+enum SituacaoReserva {
+  Vigente
+  Cancelada
+}
+Andar "1" -- "0..*" Quarto
+Quarto "1" -- "0..*" Reserva
+Reserva ..> SituacaoReserva
+note bottom of Reserva
+  Uma reserva vigente ocupa as noites em [entrada, saída).
+  Valor previsto = número de noites × diária acordada.
+end note
+@enduml

@@ -4,6 +4,8 @@ API REST para administração interna de pequenos hotéis e pousadas. O produto 
 
 O monorepo reúne a API Spring Boot em `back/` e a aplicação React, Vite e Tailwind CSS em `front/`. A entrega atual concentra-se em reservas e no mapa por andar e data. Consulte a [redefinição de escopo](entrega/redefinicao-de-escopo.md) e as [issues do frontend](entrega/issues-frontend.md).
 
+Consulte o [guia de commits, PRs e testes](docs/contribuicao.md) antes de contribuir.
+
 ## Iniciar o projeto
 
 A partir da raiz, use dois terminais. No primeiro, com JDK 21 e Maven:
@@ -152,7 +154,9 @@ O banco é temporário: os dados são recriados a cada reinicialização. Os fun
 |---|---|
 | [Documentação técnica](docs/documentacao-tecnica.md) | Sumário da Etapa 1 e pendências de modelagem |
 | [Escopo](docs/escopo.md) | Funcionalidades, limites e critérios de aceite |
-| [Concepção e requisitos](docs/requisitos.md) | RF, RNF, regras de negócio e cenários de aceite |
+| [Requisitos revisados](docs/requisitos.md) | Regras e critérios de aceite da entrega atual, com referências às issues |
+| [UML revisado](docs/uml/README.md) | Modelo de classes, casos de uso e sequência da consulta temporal |
+| [Legado](docs/legado/README.md) | Requisitos e diagramas da proposta anterior |
 | [Termo de abertura](docs/termo-de-abertura.md) | Justificativa, entregáveis e riscos |
 | [TODO](docs/todo.md) | Checklist da entrega e sequência de desenvolvimento |
 | [Contexto](docs/context.md) | Decisões, estado do código e orientações para continuidade |
