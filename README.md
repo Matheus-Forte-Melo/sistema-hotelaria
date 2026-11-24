@@ -1,8 +1,35 @@
-# Sistema de Gestão de Hospedagens
+# Pernoite — Sistema de Gestão de Hospedagens
 
 API REST para administração interna de pequenos hotéis e pousadas. O produto pretende centralizar quartos, hóspedes, reservas, check-in e check-out, oferecendo um mapa temporal da ocupação por bloco, andar e data. Os usuários previstos são administradores e recepcionistas.
 
-O nome é provisório. Este repositório contém o backend Spring Boot; o frontend será desenvolvido separadamente e consumirá JSON.
+O monorepo reúne a API Spring Boot em `back/` e a aplicação React, Vite e Tailwind CSS em `front/`. A entrega atual concentra-se em reservas e no mapa por andar e data. Consulte a [redefinição de escopo](entrega/redefinicao-de-escopo.md) e as [issues do frontend](entrega/issues-frontend.md).
+
+## Iniciar o projeto
+
+A partir da raiz, use dois terminais. No primeiro, com JDK 21 e Maven:
+
+```sh
+cd back
+mvn spring-boot:run -Dspring-boot.run.profiles=dev
+```
+
+No segundo, com Node 22.12+ e npm:
+
+```sh
+cd front
+npm ci
+npm run dev
+```
+
+Abra a URL impressa pelo Vite. A home exibe dados de demonstração e verifica a conexão ao abrir. O botão **Verificar conexão** repete a chamada a `/api/health`. O proxy de desenvolvimento encaminha `/api` ao Spring em `http://127.0.0.1:8080`. Para outra porta, defina `BACKEND_URL` em `front/.env.local` e reinicie o Vite. Em hospedagem estática, configure o servidor para encaminhar `/api` ao backend.
+
+## Fontes de dados do frontend
+
+Os componentes leem `useEstrutura()` e `useReservas()`. O [provider](front/src/contexts/HotelContexts.jsx) recebe dois repositórios com métodos assíncronos. `estrutura.listar()` retorna `{ andares, quartos }` e `reservas.listar()` retorna uma lista. Os campos e vínculos estão no [repositório de demonstração](front/src/data/mockRepositories.js).
+
+Quando uma API de negócio estiver pronta, implemente o método correspondente com HTTP e passe esse repositório ao provider em [main.jsx](front/src/main.jsx). Cada fonte pode ser substituída individualmente. Atualize o rótulo de demonstração da home conforme as fontes integradas. O healthcheck já consulta o Spring mesmo com os dados de negócio simulados.
+
+Dentro de `front/`, execute `npm run build` para gerar a versão de produção em `dist/`. Os comandos Maven abaixo devem ser executados em `back/`.
 
 ## Estado atual
 
@@ -91,6 +118,33 @@ mvn test -Dspring.profiles.active=dev
 ```
 
 **Pendência do ambiente:** os scripts `mvnw` e `mvnw.cmd` existem, mas `.mvn/wrapper` não estava presente na revisão de 23/10/2026. Restaure o Maven Wrapper completo antes de usar esses scripts. As IDEs podem utilizar seu Maven integrado. O terminal da revisão usava Java 17, abaixo do Java 21 definido pelo projeto, e não tinha Maven no PATH. Confira `java -version` e `mvn -version` no ambiente utilizado.
+
+## Dados mock e conexão pelo DBeaver
+
+Inicie a aplicação com o perfil Spring `dev` (`--spring.profiles.active=dev` na IDE). A classe `DadosIniciaisDev` carrega automaticamente 2 funcionários, 2 blocos, 3 andares, 8 quartos, 5 hóspedes, 4 reservas e 1 indisponibilidade. Há exemplos de estadia finalizada, em andamento, reserva futura e cancelada, com datas relativas ao dia atual.
+
+No DBeaver, crie uma conexão **H2**, selecione a configuração por URL e informe:
+
+| Campo | Valor |
+|---|---|
+| URL JDBC | `jdbc:h2:tcp://localhost:9092/mem:hotelaria` |
+| Usuário | `sa` |
+| Senha | Vazia |
+| Schema | `PUBLIC` |
+
+Use o driver H2 compatível com a versão resolvida pelo Maven. Mantenha a aplicação rodando enquanto usa o DBeaver. O servidor TCP só inicia no perfil `dev` e aceita clientes locais, sem `-tcpAllowOthers`. A porta pode ser alterada em `app.h2.tcp-port` no arquivo `application-dev.properties`; ajuste a URL do DBeaver se mudar essa porta.
+
+Não use `jdbc:h2:mem:hotelaria` no DBeaver: isso criaria outro banco na JVM do cliente. O acesso ao banco em memória da aplicação precisa ser via TCP, conforme a [documentação do H2](https://h2database.com/html/features.html#in_memory_databases).
+
+Para conferir os dados:
+
+```sql
+SELECT * FROM PUBLIC.QUARTO;
+SELECT * FROM PUBLIC.HOSPEDE;
+SELECT * FROM PUBLIC.RESERVA;
+```
+
+O banco é temporário: os dados são recriados a cada reinicialização. Os funcionários fictícios `admin@hotel.local` / `admin123` e `recepcao@hotel.local` / `recepcao123` são registros de demonstração, não credenciais de conexão ao banco; o login da aplicação ainda precisa ser implementado.
 
 ## Documentação de desenvolvimento
 
