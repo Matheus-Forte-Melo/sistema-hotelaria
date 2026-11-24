@@ -1,8 +1,8 @@
 # Pernoite — Sistema de Gestão de Hospedagens
 
-API REST para administração interna de pequenos hotéis e pousadas. O produto pretende centralizar quartos, hóspedes, reservas, check-in e check-out, oferecendo um mapa temporal da ocupação por bloco, andar e data. Os usuários previstos são administradores e recepcionistas.
+O Pernoite é um projeto acadêmico para a recepção de pequenos hotéis e pousadas. A entrega prevista reúne cadastro de andares e quartos, consulta de disponibilidade, criação, edição e cancelamento de reservas e um mapa temporal. Ao escolher um andar e uma data, a recepção poderá ver quais quartos estão reservados naquela noite.
 
-O monorepo reúne a API Spring Boot em `back/` e a aplicação React, Vite e Tailwind CSS em `front/`. A entrega atual concentra-se em reservas e no mapa por andar e data. Consulte a [redefinição de escopo](entrega/redefinicao-de-escopo.md) e as [issues do frontend](entrega/issues-frontend.md).
+O monorepo reúne a API Spring Boot em `back/` e a aplicação React com Vite, Tailwind CSS e TanStack Query em `front/`. A home já apresenta o layout das cinco funcionalidades com dados de demonstração. O healthcheck faz uma chamada real ao Spring. As operações de negócio estão planejadas na [divisão de atividades de backend e frontend](entrega/divisao-de-atividades.md), conforme o [escopo revisado](entrega/redefinicao-de-escopo.md).
 
 Consulte o [guia de commits, PRs e testes](docs/contribuicao.md) antes de contribuir.
 
@@ -27,15 +27,15 @@ Abra a URL impressa pelo Vite. A home exibe dados de demonstração e verifica a
 
 ## Fontes de dados do frontend
 
-Os componentes leem `useEstrutura()` e `useReservas()`. O [provider](front/src/contexts/HotelContexts.jsx) recebe dois repositórios com métodos assíncronos. `estrutura.listar()` retorna `{ andares, quartos }` e `reservas.listar()` retorna uma lista. Os campos e vínculos estão no [repositório de demonstração](front/src/data/mockRepositories.js).
+As consultas usam TanStack Query. Os componentes leem `useEstrutura()` e `useReservas()`. O [provider](front/src/contexts/HotelContexts.jsx) recebe dois repositórios com métodos assíncronos. `estrutura.listar()` retorna `{ andares, quartos }` e `reservas.listar()` retorna uma lista. Os campos e vínculos estão no [repositório de demonstração](front/src/data/mockRepositories.js).
 
 Quando uma API de negócio estiver pronta, implemente o método correspondente com HTTP e passe esse repositório ao provider em [main.jsx](front/src/main.jsx). Cada fonte pode ser substituída individualmente. Atualize o rótulo de demonstração da home conforme as fontes integradas. O healthcheck já consulta o Spring mesmo com os dados de negócio simulados.
 
-Dentro de `front/`, execute `npm run build` para gerar a versão de produção em `dist/`. Os comandos Maven abaixo devem ser executados em `back/`.
+Dentro de `front/`, execute `npm test` para rodar os testes unitários e `npm run build` para gerar a versão de produção em `dist/`. Os comandos Maven abaixo devem ser executados em `back/`.
 
 ## Estado atual
 
-A camada de persistência da Etapa 1 está implementada: nove entidades JPA com relacionamentos, repositórios `JpaRepository` e testes de integração no H2. O diagrama de classes UML e o dicionário de dados estão no [documento técnico](docs/documentacao-tecnica.md#3-arquitetura-e-modelagem-de-dados). Serviços e endpoints de negócio ainda não existem. Consulte o [TODO](docs/todo.md) e o [contexto](docs/context.md).
+A camada de persistência da Etapa 1 está implementada: nove entidades JPA com relacionamentos, repositórios `JpaRepository` e testes de integração no H2. O diagrama de classes UML e o dicionário de dados estão no [documento técnico](docs/documentacao-tecnica.md#3-arquitetura-e-modelagem-de-dados). Serviços e endpoints de negócio ainda não existem. O [modelo UML revisado](docs/uml/README.md) descreve o domínio previsto para a entrega atual.
 
 ## Identificação da equipe
 
@@ -51,7 +51,7 @@ A equipe é composta por cinco integrantes:
 
 ## Tecnologias e pré-requisitos
 
-- JDK 21 recomendado, conforme a versão Java definida no `pom.xml`.
+- JDK 21 recomendado, conforme a versão Java definida no [pom.xml do backend](back/pom.xml).
 - Spring Boot 4.1.2, Maven, Spring Web MVC, Spring Data JPA, Validation e Spring Security.
 - H2 em memória, com perfil Spring `dev`.
 - Eclipse com integração Maven (m2e) ou IntelliJ IDEA, da JetBrains.
@@ -63,7 +63,7 @@ Não é necessário instalar H2 ou Tomcat separadamente. Configure o JDK tanto n
 
 1. Em **Window > Preferences > Java > Installed JREs**, adicione e selecione o JDK 21.
 2. Selecione **File > Import > Maven > Existing Maven Projects**.
-3. Escolha a pasta que contém o `pom.xml` e conclua a importação.
+3. Em **Root Directory**, selecione a pasta `back/` e conclua a importação.
 4. Aguarde as dependências. Se necessário, use **Maven > Update Project** e confira o JDK em **Properties > Java Build Path**.
 5. Em **Run > Run Configurations > Java Application**, crie uma configuração para o projeto.
 6. Selecione a classe principal `br.com.hotelaria.hotelaria.HotelariaApplication`.
@@ -74,7 +74,7 @@ Com Spring Tools instalado, também é possível executar como **Spring Boot App
 
 ## Executar no IntelliJ IDEA (JetBrains)
 
-1. Em **File > Open**, abra a pasta do projeto ou o `pom.xml` como projeto Maven.
+1. Em **File > Open**, abra a pasta `back/` ou o arquivo `back/pom.xml` como projeto Maven.
 2. Em **File > Project Structure > Project SDK**, selecione o JDK 21.
 3. Aguarde a sincronização Maven. Confira também o JDK do importador e do runner em **Settings > Build, Execution, Deployment > Build Tools > Maven**.
 4. Abra `HotelariaApplication.java` e execute o método `main` pelo ícone ao lado dele.
@@ -116,14 +116,14 @@ mvn spring-boot:run -Dspring-boot.run.profiles=dev
 Para executar os testes existentes:
 
 ```bash
-mvn test -Dspring.profiles.active=dev
+mvn test
 ```
 
-**Pendência do ambiente:** os scripts `mvnw` e `mvnw.cmd` existem, mas `.mvn/wrapper` não estava presente na revisão de 23/10/2026. Restaure o Maven Wrapper completo antes de usar esses scripts. As IDEs podem utilizar seu Maven integrado. O terminal da revisão usava Java 17, abaixo do Java 21 definido pelo projeto, e não tinha Maven no PATH. Confira `java -version` e `mvn -version` no ambiente utilizado.
+O Maven Wrapper está incompleto no repositório. Para os comandos acima, use o Maven instalado no sistema ou o integrado à IDE.
 
-## Dados mock e conexão pelo DBeaver
+## Dados da Etapa 1 no H2 e conexão pelo DBeaver
 
-Inicie a aplicação com o perfil Spring `dev` (`--spring.profiles.active=dev` na IDE). A classe `DadosIniciaisDev` carrega automaticamente 2 funcionários, 2 blocos, 3 andares, 8 quartos, 5 hóspedes, 4 reservas e 1 indisponibilidade. Há exemplos de estadia finalizada, em andamento, reserva futura e cancelada, com datas relativas ao dia atual.
+Inicie a aplicação com o perfil Spring `dev` (`--spring.profiles.active=dev` na IDE). Os exemplos no H2 exercitam o modelo original da Etapa 1. A home usa os mocks de `front/`. A classe `DadosIniciaisDev` carrega automaticamente 2 funcionários, 2 blocos, 3 andares, 8 quartos, 5 hóspedes, 4 reservas e 1 indisponibilidade. Há exemplos de estadia finalizada, em andamento, reserva futura e cancelada, com datas relativas ao dia atual.
 
 No DBeaver, crie uma conexão **H2**, selecione a configuração por URL e informe:
 
@@ -153,12 +153,12 @@ O banco é temporário: os dados são recriados a cada reinicialização. Os fun
 | Documento | Conteúdo |
 |---|---|
 | [Documentação técnica](docs/documentacao-tecnica.md) | Sumário da Etapa 1 e pendências de modelagem |
-| [Escopo](docs/escopo.md) | Funcionalidades, limites e critérios de aceite |
+| [Escopo revisado](entrega/redefinicao-de-escopo.md) | Funcionalidades, limites e critérios de aceite da entrega atual |
 | [Requisitos revisados](docs/requisitos.md) | Regras e critérios de aceite da entrega atual, com referências às issues |
 | [UML revisado](docs/uml/README.md) | Modelo de classes, casos de uso e sequência da consulta temporal |
 | [Legado](docs/legado/README.md) | Requisitos e diagramas da proposta anterior |
 | [Termo de abertura](docs/termo-de-abertura.md) | Justificativa, entregáveis e riscos |
-| [TODO](docs/todo.md) | Checklist da entrega e sequência de desenvolvimento |
-| [Contexto](docs/context.md) | Decisões, estado do código e orientações para continuidade |
+| [TODO](docs/todo.md) | Checklist da Etapa 1 |
+| [Contexto](docs/context.md) | Decisões e estado do código registrados na Etapa 1 |
 
-Antes de implementar, consulte as regras temporais e de concorrência. Atualize contexto e checklist conforme o código evoluir.
+Antes de implementar, consulte as regras temporais e de concorrência. Consulte os critérios de aceite da issue de backend ou frontend correspondente.
