@@ -35,6 +35,7 @@ import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
 import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
@@ -72,6 +73,12 @@ public class Reserva {
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "quarto_id", nullable = false, foreignKey = @ForeignKey(name = "fk_reserva_quarto"))
     private Quarto quarto;
+
+    /** Nome de referência usado pela recepção para localizar a reserva (escopo revisado, RF08). */
+    @NotBlank
+    @Size(max = 120)
+    @Column(name = "nome_hospede", nullable = false, length = 120)
+    private String nomeHospede;
 
     @ManyToMany
     @JoinTable(name = "reserva_hospede",
@@ -115,9 +122,9 @@ public class Reserva {
     @Column(name = "motivo_cancelamento", length = 255)
     private String motivoCancelamento;
 
-    @NotNull
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "criada_por_id", nullable = false, foreignKey = @ForeignKey(name = "fk_reserva_funcionario"))
+    /** Opcional: a gestão de acesso ficou fora do escopo revisado. */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "criada_por_id", foreignKey = @ForeignKey(name = "fk_reserva_funcionario"))
     private Funcionario criadaPor;
 
     @CreationTimestamp
@@ -134,19 +141,66 @@ public class Reserva {
     protected Reserva() {
     }
 
-    public Reserva(Quarto quarto, LocalDate dataEntradaPrevista, LocalDate dataSaidaPrevista,
+    public Reserva(Quarto quarto, String nomeHospede, LocalDate dataEntradaPrevista, LocalDate dataSaidaPrevista,
+            int quantidadePessoas, BigDecimal valorDiaria) {
+        this(quarto, nomeHospede, dataEntradaPrevista, dataSaidaPrevista, quantidadePessoas, valorDiaria, null);
+    }
+
+    public Reserva(Quarto quarto, String nomeHospede, LocalDate dataEntradaPrevista, LocalDate dataSaidaPrevista,
             int quantidadePessoas, BigDecimal valorDiaria, Funcionario criadaPor) {
-        validarPeriodo(dataEntradaPrevista, dataSaidaPrevista);
-        if (!quarto.comporta(quantidadePessoas)) {
-            throw new RegraNegocioException("Quantidade de pessoas deve ser positiva e respeitar a capacidade do quarto");
-        }
+        String nome = validarDados(quarto, nomeHospede, dataEntradaPrevista, dataSaidaPrevista,
+            quantidadePessoas, valorDiaria);
         this.quarto = quarto;
+        this.nomeHospede = nome;
         this.dataEntradaPrevista = dataEntradaPrevista;
         this.dataSaidaPrevista = dataSaidaPrevista;
         this.quantidadePessoas = quantidadePessoas;
         this.valorDiaria = valorDiaria;
         this.criadaPor = criadaPor;
         this.situacao = SituacaoReserva.CONFIRMADA;
+    }
+
+    /**
+     * Altera os dados combinados da reserva (RF08, regra 3). Valida tudo antes de mudar qualquer campo,
+     * de modo que uma tentativa inválida preserva a reserva anterior. O conflito com outras reservas
+     * depende do banco e é verificado no serviço antes desta chamada.
+     */
+    public void alterar(Quarto novoQuarto, String novoNome, LocalDate novaEntrada, LocalDate novaSaida,
+            int novaQuantidade, BigDecimal novaDiaria) {
+        exigirSituacao(SituacaoReserva.CONFIRMADA);
+        String nome = validarDados(novoQuarto, novoNome, novaEntrada, novaSaida, novaQuantidade, novaDiaria);
+        if (novaQuantidade < hospedes.size()) {
+            throw new RegraNegocioException("Quantidade de pessoas menor que a de hóspedes já identificados");
+        }
+        this.quarto = novoQuarto;
+        this.nomeHospede = nome;
+        this.dataEntradaPrevista = novaEntrada;
+        this.dataSaidaPrevista = novaSaida;
+        this.quantidadePessoas = novaQuantidade;
+        this.valorDiaria = novaDiaria;
+    }
+
+    private static String validarDados(Quarto quarto, String nomeHospede, LocalDate entrada, LocalDate saida,
+            int quantidadePessoas, BigDecimal valorDiaria) {
+        if (quarto == null) {
+            throw new RegraNegocioException("Quarto é obrigatório");
+        }
+        if (nomeHospede == null || nomeHospede.isBlank()) {
+            throw new RegraNegocioException("Nome do hóspede é obrigatório");
+        }
+        String nome = nomeHospede.strip();
+        if (nome.length() > 120) {
+            throw new RegraNegocioException("Nome do hóspede deve ter no máximo 120 caracteres");
+        }
+        validarPeriodo(entrada, saida);
+        if (!quarto.comporta(quantidadePessoas)) {
+            throw new RegraNegocioException("Quantidade de pessoas deve ser de 1 a " + quarto.getCapacidade()
+                + ", a capacidade do quarto " + quarto.getIdentificacao());
+        }
+        if (valorDiaria == null || valorDiaria.signum() < 0) {
+            throw new RegraNegocioException("Valor da diária deve ser zero ou positivo");
+        }
+        return nome;
     }
 
     public long quantidadeDiarias() {
@@ -303,6 +357,10 @@ public class Reserva {
 
     public Quarto getQuarto() {
         return quarto;
+    }
+
+    public String getNomeHospede() {
+        return nomeHospede;
     }
 
     public Set<Hospede> getHospedes() {
