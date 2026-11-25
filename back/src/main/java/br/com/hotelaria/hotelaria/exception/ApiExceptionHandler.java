@@ -1,5 +1,6 @@
 package br.com.hotelaria.hotelaria.exception;
 
+import java.time.LocalDate;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -10,6 +11,7 @@ import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 /**
  * Converte as recusas em respostas com {@code mensagem}, que a interface exibe como motivo.
@@ -52,6 +54,13 @@ public class ApiExceptionHandler {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<Map<String, Object>> corpoInvalido(HttpMessageNotReadableException e) {
         return resposta(HttpStatus.BAD_REQUEST, "Corpo da requisição inválido. Datas devem usar o formato AAAA-MM-DD.");
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<Map<String, Object>> parametroInvalido(MethodArgumentTypeMismatchException e) {
+        String dica = LocalDate.class.equals(e.getRequiredType())
+            ? " Datas devem usar o formato AAAA-MM-DD." : "";
+        return resposta(HttpStatus.BAD_REQUEST, "Parâmetro " + e.getName() + " inválido." + dica);
     }
 
     private static ResponseEntity<Map<String, Object>> resposta(HttpStatus status, String mensagem) {
