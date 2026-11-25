@@ -1,4 +1,5 @@
 import { useEstrutura, useReservas } from './contexts/HotelContexts'
+import QuartosDisponibilidade from './features/quartos/QuartosDisponibilidade'
 import HealthCheck from './HealthCheck'
 
 const formatarData = data => data.split('-').reverse().join('/')
@@ -61,13 +62,7 @@ function Painel() {
       <Campos itens={[[ 'Hóspede', 'text' ], ['Quarto', 'text'], ['Entrada', 'date'], ['Saída', 'date'], ['Pessoas', 'number'], ['Diária acordada (R$)', 'number']]} acao="Salvar reserva" />
       <p className="total">Total previsto <strong>R$ —</strong></p>
     </section>
-    <section id="quartos" className="feature"><h2 className="section-title">Quartos e disponibilidade</h2>
-      <h3>Disponibilidade por período</h3>
-      <Campos itens={[[ 'Entrada', 'date' ], ['Saída', 'date'], ['Pessoas', 'number']]} acao="Buscar quartos" />
-      <details className="preview-details"><summary>Cadastro de quarto</summary>
-        <Campos itens={[[ 'Andar', 'number' ], ['Identificação', 'text'], ['Capacidade', 'number'], ['Diária padrão (R$)', 'number']]} acao="Cadastrar quarto" />
-      </details>
-    </section>
+    <QuartosDisponibilidade />
     <section id="andares" className="feature"><h2 className="section-title">Andares</h2>
       <Campos itens={[[ 'Número do andar', 'number' ]]} acao="Cadastrar andar" />
       <ul className="floor-list">{andares.map(andar => <li key={andar.id}>{andar.numero}º andar</li>)}</ul>

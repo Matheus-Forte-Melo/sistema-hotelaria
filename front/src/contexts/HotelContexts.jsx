@@ -8,6 +8,11 @@ export function HotelProvider({ repositories, children }) {
   return <RepositoriosContext.Provider value={repositories}>{children}</RepositoriosContext.Provider>
 }
 
+/** Repositórios injetados no HotelProvider, para os hooks das features. */
+export function useRepositorios() {
+  return useContext(RepositoriosContext)
+}
+
 function useLista(opcoes) {
   const { data, isPending, isError } = useQuery(opcoes)
   return { dados: data, carregando: isPending, erro: isError }
