@@ -1,6 +1,6 @@
 import { createContext, useContext } from 'react'
-import { useQuery } from '@tanstack/react-query'
-import { consultaEstrutura, consultaReservas } from '../data/consultas'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { consultaEstrutura, consultaReservas, mutacaoSalvarReserva } from '../data/consultas'
 
 const RepositoriosContext = createContext(null)
 
@@ -21,4 +21,20 @@ export function useEstrutura() {
 export function useReservas() {
   const repositories = useContext(RepositoriosContext)
   return useLista(consultaReservas(repositories))
+}
+
+/**
+ * Cria ou edita uma reserva: `salvar({ pedido })` cria e `salvar({ id, pedido })` edita.
+ * `erro` traz a mensagem da recusa para a tela exibir como motivo.
+ */
+export function useSalvarReserva() {
+  const repositories = useContext(RepositoriosContext)
+  const queryClient = useQueryClient()
+  const mutacao = useMutation(mutacaoSalvarReserva(repositories, queryClient))
+  return {
+    salvar: mutacao.mutate,
+    salvando: mutacao.isPending,
+    erro: mutacao.error?.message ?? null,
+    reiniciar: mutacao.reset,
+  }
 }
