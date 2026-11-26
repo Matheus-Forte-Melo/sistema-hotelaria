@@ -173,6 +173,40 @@ class ReservaServiceTest {
     }
 
     @Test
+    void edicaoSemDiariaPreservaADiariaCombinada() {
+        ReservaResponse ana = reservaAna();
+        q101.alterarValorDiariaPadrao(new BigDecimal("200.00"));
+        quartos.saveAndFlush(q101);
+
+        ReservaResponse editada = service.editar(ana.id(), pedido("Ana", q101, DIA_10, DIA_13, 2, null));
+
+        assertThat(editada.valorDiaria()).isEqualByComparingTo("180.00");
+        assertThat(editada.valorTotal()).isEqualByComparingTo("540.00");
+    }
+
+    @Test
+    void edicaoSemDiariaAoTrocarDeQuartoTambemPreservaADiariaCombinada() {
+        ReservaResponse ana = reservaAna();
+
+        ReservaResponse movida = service.editar(ana.id(), pedido("Ana", q102, DIA_10, DIA_12, 2, null));
+
+        assertThat(movida.quartoIdentificacao()).isEqualTo("102");
+        assertThat(movida.valorDiaria()).isEqualByComparingTo("180.00");
+    }
+
+    @Test
+    void recusaEdicaoDeReservaCanceladaComMensagemParaATela() {
+        ReservaResponse ana = reservaAna();
+        Reserva gravada = reservas.findById(ana.id()).orElseThrow();
+        gravada.cancelar(Instant.now(), "Desistência");
+        reservas.saveAndFlush(gravada);
+
+        assertThatThrownBy(() -> service.editar(ana.id(), pedido("Ana", q101, DIA_10, DIA_13, 2, R180)))
+            .isInstanceOf(RegraNegocioException.class)
+            .hasMessage("Reservas canceladas não podem ser editadas");
+    }
+
+    @Test
     void extensaoComConflitoMantemReservaAnterior() {
         ReservaResponse ana = reservaAna();
         service.criar(pedido("Bruno", q101, DIA_12, DIA_14, 1, R180));

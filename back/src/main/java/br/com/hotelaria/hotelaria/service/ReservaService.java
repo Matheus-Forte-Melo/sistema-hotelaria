@@ -12,6 +12,7 @@ import br.com.hotelaria.hotelaria.exception.RecursoNaoEncontradoException;
 import br.com.hotelaria.hotelaria.exception.RegraNegocioException;
 import br.com.hotelaria.hotelaria.model.Quarto;
 import br.com.hotelaria.hotelaria.model.Reserva;
+import br.com.hotelaria.hotelaria.model.SituacaoReserva;
 import br.com.hotelaria.hotelaria.repository.QuartoRepository;
 import br.com.hotelaria.hotelaria.repository.ReservaRepository;
 
@@ -36,24 +37,35 @@ public class ReservaService {
         Quarto quarto = bloquearQuarto(pedido.quartoId());
         verificarConflito(quarto, pedido, null);
         Reserva reserva = new Reserva(quarto, pedido.nomeHospede(), pedido.dataEntrada(), pedido.dataSaida(),
-            quantidade(pedido), diaria(pedido, quarto));
+            quantidade(pedido), diariaOuPadrao(pedido.valorDiaria(), quarto.getValorDiariaPadrao()));
         return ReservaResponse.de(reservas.saveAndFlush(reserva));
     }
 
     /**
      * Revalida quarto, período e pessoas desconsiderando a própria reserva. A verificação de conflito
      * acontece antes de alterar a entidade, de modo que uma recusa mantém os dados anteriores.
+     * Sem {@code valorDiaria}, mantém a diária já combinada, mesmo ao trocar de quarto (regra 5).
      */
     @Transactional
     public ReservaResponse editar(Long id, ReservaRequest pedido) {
         Reserva reserva = reservas.findById(id)
             .orElseThrow(() -> new RecursoNaoEncontradoException("Reserva " + id + " não encontrada"));
+        exigirEditavel(reserva);
         validarPeriodo(pedido);
         Quarto quarto = bloquearQuarto(pedido.quartoId());
         verificarConflito(quarto, pedido, reserva.getId());
         reserva.alterar(quarto, pedido.nomeHospede(), pedido.dataEntrada(), pedido.dataSaida(),
-            quantidade(pedido), diaria(pedido, quarto));
+            quantidade(pedido), diariaOuPadrao(pedido.valorDiaria(), reserva.getValorDiaria()));
         return ReservaResponse.de(reservas.saveAndFlush(reserva));
+    }
+
+    private static void exigirEditavel(Reserva reserva) {
+        if (reserva.getSituacao() == SituacaoReserva.CANCELADA) {
+            throw new RegraNegocioException("Reservas canceladas não podem ser editadas");
+        }
+        if (reserva.getSituacao() != SituacaoReserva.CONFIRMADA) {
+            throw new RegraNegocioException("Somente reservas confirmadas podem ser editadas");
+        }
     }
 
     private Quarto bloquearQuarto(Long quartoId) {
@@ -83,7 +95,7 @@ public class ReservaService {
         return pedido.quantidadePessoas() == null ? 0 : pedido.quantidadePessoas();
     }
 
-    private static BigDecimal diaria(ReservaRequest pedido, Quarto quarto) {
-        return pedido.valorDiaria() != null ? pedido.valorDiaria() : quarto.getValorDiariaPadrao();
+    private static BigDecimal diariaOuPadrao(BigDecimal informada, BigDecimal padrao) {
+        return informada != null ? informada : padrao;
     }
 }
