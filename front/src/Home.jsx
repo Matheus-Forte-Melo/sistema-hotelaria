@@ -1,5 +1,6 @@
 import { useEstrutura, useReservas } from './contexts/HotelContexts'
 import HealthCheck from './HealthCheck'
+import SecaoFormularioReserva from './features/reservas/formulario/SecaoFormularioReserva'
 
 const formatarData = data => data.split('-').reverse().join('/')
 
@@ -58,8 +59,7 @@ function Painel() {
       </details>
     </section>
     <section id="formulario" className="feature"><h2 className="section-title">Criar e editar reserva</h2>
-      <Campos itens={[[ 'Hóspede', 'text' ], ['Quarto', 'text'], ['Entrada', 'date'], ['Saída', 'date'], ['Pessoas', 'number'], ['Diária acordada (R$)', 'number']]} acao="Salvar reserva" />
-      <p className="total">Total previsto <strong>R$ —</strong></p>
+      <SecaoFormularioReserva />
     </section>
     <section id="quartos" className="feature"><h2 className="section-title">Quartos e disponibilidade</h2>
       <h3>Disponibilidade por período</h3>

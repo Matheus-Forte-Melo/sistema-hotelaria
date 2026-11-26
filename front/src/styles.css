@@ -56,6 +56,22 @@ summary { cursor: pointer; font-weight: 550; }
 details[open] summary { margin-bottom: .8rem; }
 .floor-list li { padding: .4rem .8rem; background: #edf2e9; border-radius: .3rem; }
 .total strong { margin-left: .5rem; }
+.modo-formulario { max-width: 34rem; margin-bottom: 1.25rem; }
+.form-grade { display: grid; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); gap: .9rem 1rem; }
+.campo-reserva select:disabled { opacity: .7; }
+[aria-invalid="true"] { border-color: #a3473a; }
+.erro-campo { color: #8e3b2f; font-size: .8rem; }
+.dica { margin-top: .9rem; font-size: .88rem; color: #6b5a3c; }
+.form-rodape { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; justify-content: space-between;
+  margin-top: 1.4rem; padding-top: 1rem; border-top: 1px solid #d6dbd1; }
+.form-rodape .total { display: flex; flex-wrap: wrap; align-items: baseline; gap: .1rem .5rem; }
+.form-rodape .total strong { font: 1.6rem "Spectral", Georgia, serif; color: #173732; margin-left: 0; }
+.detalhe-total { flex-basis: 100%; font-size: .82rem; }
+button.primario { background: #133d38; color: #f5f2e5; border-color: #133d38; }
+button.primario:hover { background: #1d544c; }
+.alerta, .sucesso { margin-top: 1rem; padding: .7rem .9rem; border-radius: .35rem; font-size: .9rem; }
+.alerta { background: #f6e6e1; color: #7a2f24; border-left: 3px solid #a3473a; }
+.sucesso { background: #e2edde; color: #305135; border-left: 3px solid #5d8a62; }
 @media (max-width: 760px) {
   .dashboard { display: block; }
   .dashboard nav { border: 0; border-bottom: 1px solid #d6dbd1; padding-block: .5rem; }
