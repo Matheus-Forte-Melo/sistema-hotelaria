@@ -99,14 +99,14 @@ public class DadosIniciaisDev implements CommandLineRunner {
         Hospede john = hospede("John Smith", LocalDate.of(1979, 7, 30), TipoDocumento.PASSAPORTE, "X1234567");
 
         // Estadia finalizada no passado
-        Reserva passada = new Reserva(q101, hoje.minusDays(10), hoje.minusDays(7), 1, new BigDecimal("170.00"), recepcao);
+        Reserva passada = new Reserva(q101, "John Smith", hoje.minusDays(10), hoje.minusDays(7), 1, new BigDecimal("170.00"), recepcao);
         passada.adicionarHospede(john);
         passada.fazerCheckIn(momento(hoje.minusDays(10), 14), ZONA_HOTEL);
         passada.fazerCheckOut(momento(hoje.minusDays(7), 11));
         reservas.save(passada);
 
         // Hospedagem em andamento: família com criança
-        Reserva emAndamento = new Reserva(q103, hoje.minusDays(1), hoje.plusDays(3), 3, new BigDecimal("320.00"),
+        Reserva emAndamento = new Reserva(q103, "Ana Souza", hoje.minusDays(1), hoje.plusDays(3), 3, new BigDecimal("320.00"),
             recepcao);
         emAndamento.adicionarHospede(ana);
         emAndamento.adicionarHospede(bruno);
@@ -115,12 +115,12 @@ public class DadosIniciaisDev implements CommandLineRunner {
         reservas.save(emAndamento);
 
         // Reserva futura com lista incompleta (1 de 2 identificados)
-        Reserva futura = new Reserva(q201, hoje.plusDays(5), hoje.plusDays(8), 2, new BigDecimal("420.00"), recepcao);
+        Reserva futura = new Reserva(q201, "Carla Lima", hoje.plusDays(5), hoje.plusDays(8), 2, new BigDecimal("420.00"), recepcao);
         futura.adicionarHospede(carla);
         reservas.save(futura);
 
         // Reserva cancelada: permanece consultável, mas não bloqueia o quarto
-        Reserva cancelada = new Reserva(q102, hoje.plusDays(2), hoje.plusDays(4), 1, new BigDecimal("180.00"), recepcao);
+        Reserva cancelada = new Reserva(q102, "John Smith", hoje.plusDays(2), hoje.plusDays(4), 1, new BigDecimal("180.00"), recepcao);
         cancelada.adicionarHospede(john);
         cancelada.cancelar(Instant.now(), "Hóspede desistiu da viagem");
         reservas.save(cancelada);

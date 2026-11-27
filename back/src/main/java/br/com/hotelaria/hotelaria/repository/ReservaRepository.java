@@ -3,6 +3,7 @@ package br.com.hotelaria.hotelaria.repository;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -41,6 +42,13 @@ public interface ReservaRepository extends JpaRepository<Reserva, Long> {
         @Param("fim") LocalDate fim);
 
     List<Reserva> findByQuartoIdAndSituacao(Long quartoId, SituacaoReserva situacao);
+
+    /**
+     * Busca da recepção pelo nome de referência, por trecho e sem diferenciar maiúsculas (RF08, issue #4).
+     * Inclui reservas canceladas, que continuam consultáveis (regra 4). Carrega quarto e andar para a resposta.
+     */
+    @EntityGraph(attributePaths = { "quarto", "quarto.andar" })
+    List<Reserva> findByNomeHospedeContainingIgnoreCaseOrderByDataEntradaPrevistaAscIdAsc(String nome);
 
     /** Histórico do hóspede (RF18). */
     List<Reserva> findByHospedesIdOrderByDataEntradaPrevistaDesc(Long hospedeId);

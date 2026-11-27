@@ -1,7 +1,9 @@
 import { useEstrutura, useReservas } from './contexts/HotelContexts'
+import ConsultaReservas from './features/reservas/consulta/ConsultaReservas'
 import HealthCheck from './HealthCheck'
 
-const formatarData = data => data.split('-').reverse().join('/')
+// Até a FRONT-03 (#8) receber a reserva a editar, o botão Editar apenas leva ao formulário.
+const abrirEdicao = () => { window.location.hash = 'formulario' }
 
 const navegacao = [
   ['inicio', 'Visão geral'], ['mapa', 'Mapa temporal'], ['reservas', 'Consultar reservas'],
@@ -42,21 +44,7 @@ function Painel() {
         <aside className="room-detail"><h3>Detalhes do quarto 101</h3><strong>Marina Costa</strong><p>24 a 26 de novembro · 2 pessoas</p></aside>
       </div>
     </section>
-    <section id="reservas" className="feature"><h2 className="section-title">Consultar reservas</h2>
-      <Campos itens={[[ 'Nome do hóspede', 'search' ]]} acao="Buscar" />
-      <div className="overflow-x-auto"><table>
-        <thead><tr>{['Hóspede', 'Quarto', 'Entrada', 'Saída', 'Situação', 'Ações'].map(t => <th key={t}>{t}</th>)}</tr></thead>
-        <tbody>{reservas.dados.map(r => <tr key={r.id}>
-          <th scope="row">{r.hospede}</th><td>{quartos.find(q => q.id === r.quartoId)?.numero ?? '—'}</td>
-          <td>{formatarData(r.entrada)}</td><td>{formatarData(r.saida)}</td><td><span className={r.situacao === 'Vigente' ? 'active' : 'inactive'}>{r.situacao}</span></td>
-          <td><button type="button" disabled>Detalhes</button></td>
-        </tr>)}</tbody>
-      </table></div>
-      <details className="preview-details"><summary>Prévia dos detalhes da reserva</summary>
-        <p>Marina Costa · Quarto 101 · 2 pessoas</p><p>2 diárias de R$ 180 · Total previsto de R$ 360</p>
-        <fieldset disabled className="flex flex-wrap gap-2 mt-3"><button>Editar</button><button>Cancelar reserva</button></fieldset>
-      </details>
-    </section>
+    <ConsultaReservas onEditar={abrirEdicao} />
     <section id="formulario" className="feature"><h2 className="section-title">Criar e editar reserva</h2>
       <Campos itens={[[ 'Hóspede', 'text' ], ['Quarto', 'text'], ['Entrada', 'date'], ['Saída', 'date'], ['Pessoas', 'number'], ['Diária acordada (R$)', 'number']]} acao="Salvar reserva" />
       <p className="total">Total previsto <strong>R$ —</strong></p>

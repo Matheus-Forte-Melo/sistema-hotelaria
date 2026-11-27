@@ -84,7 +84,7 @@ class PersistenciaJpaTest {
     }
 
     private Reserva novaReserva(LocalDate entrada, LocalDate saida) {
-        Reserva reserva = new Reserva(quarto, entrada, saida, 2, new BigDecimal("180.00"), admin);
+        Reserva reserva = new Reserva(quarto, "Carlos", entrada, saida, 2, new BigDecimal("180.00"), admin);
         reserva.adicionarHospede(adulto);
         reserva.adicionarHospede(crianca);
         return reservas.saveAndFlush(reserva);

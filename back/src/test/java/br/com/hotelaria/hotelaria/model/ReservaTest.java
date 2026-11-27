@@ -36,7 +36,7 @@ class ReservaTest {
     }
 
     private Reserva reserva(int pessoas) {
-        return new Reserva(quarto, ENTRADA, SAIDA, pessoas, new BigDecimal("180.00"), recepcionista);
+        return new Reserva(quarto, "Ana", ENTRADA, SAIDA, pessoas, new BigDecimal("180.00"), recepcionista);
     }
 
     @Test
@@ -60,7 +60,7 @@ class ReservaTest {
 
     @Test
     void rejeitaPeriodoInvalidoECapacidadeExcedida() {
-        assertThatThrownBy(() -> new Reserva(quarto, ENTRADA, ENTRADA, 1, BigDecimal.TEN, recepcionista))
+        assertThatThrownBy(() -> new Reserva(quarto, "Ana", ENTRADA, ENTRADA, 1, BigDecimal.TEN, recepcionista))
             .isInstanceOf(RegraNegocioException.class);
         assertThatThrownBy(() -> reserva(4)).isInstanceOf(RegraNegocioException.class);
     }
@@ -132,6 +132,67 @@ class ReservaTest {
         assertThat(correcao.getCheckOutNovo()).isEqualTo(novaSaida);
         assertThat(reserva.getCheckOutEm()).isEqualTo(novaSaida);
         assertThat(reserva.getCorrecoes()).containsExactly(correcao);
+    }
+
+    @Test
+    void criaReservaSomenteComNomeDeReferenciaESemFuncionario() {
+        Reserva reserva = new Reserva(quarto, "  Ana Souza ", ENTRADA, SAIDA, 2, new BigDecimal("180.00"));
+
+        assertThat(reserva.getNomeHospede()).isEqualTo("Ana Souza");
+        assertThat(reserva.getCriadaPor()).isNull();
+        assertThat(reserva.getSituacao()).isEqualTo(SituacaoReserva.CONFIRMADA);
+        assertThat(reserva.valorPrevisto()).isEqualByComparingTo("360.00");
+    }
+
+    @Test
+    void rejeitaNomeVazioQuantidadeNaoPositivaEDiariaNegativa() {
+        assertThatThrownBy(() -> new Reserva(quarto, " ", ENTRADA, SAIDA, 1, BigDecimal.TEN))
+            .isInstanceOf(RegraNegocioException.class);
+        assertThatThrownBy(() -> new Reserva(quarto, "Ana", ENTRADA, SAIDA, 0, BigDecimal.TEN))
+            .isInstanceOf(RegraNegocioException.class);
+        assertThatThrownBy(() -> new Reserva(quarto, "Ana", ENTRADA, SAIDA, 1, new BigDecimal("-1")))
+            .isInstanceOf(RegraNegocioException.class);
+    }
+
+    @Test
+    void alteracaoValidaAtualizaQuartoPeriodoPessoasEDiaria() {
+        Reserva reserva = reserva(2);
+        Quarto maior = new Quarto(quarto.getAndar(), "102", "Família", 4, new BigDecimal("300.00"),
+            LocalDate.of(2026, 1, 1));
+
+        reserva.alterar(maior, "Ana Lima", ENTRADA, SAIDA.plusDays(1), 4, new BigDecimal("180.00"));
+
+        assertThat(reserva.getQuarto()).isSameAs(maior);
+        assertThat(reserva.getNomeHospede()).isEqualTo("Ana Lima");
+        assertThat(reserva.getDataSaidaPrevista()).isEqualTo(SAIDA.plusDays(1));
+        assertThat(reserva.getQuantidadePessoas()).isEqualTo(4);
+        assertThat(reserva.valorPrevisto()).isEqualByComparingTo("540.00");
+    }
+
+    @Test
+    void alteracaoInvalidaPreservaTodosOsDadosAnteriores() {
+        Reserva reserva = reserva(2);
+        Quarto pequeno = new Quarto(quarto.getAndar(), "103", "Single", 1, new BigDecimal("100.00"),
+            LocalDate.of(2026, 1, 1));
+
+        assertThatThrownBy(() -> reserva.alterar(pequeno, "Outro", ENTRADA, SAIDA.plusDays(3), 2, BigDecimal.ONE))
+            .isInstanceOf(RegraNegocioException.class);
+        assertThatThrownBy(() -> reserva.alterar(quarto, "Outro", SAIDA, SAIDA, 2, BigDecimal.ONE))
+            .isInstanceOf(RegraNegocioException.class);
+
+        assertThat(reserva.getQuarto()).isSameAs(quarto);
+        assertThat(reserva.getNomeHospede()).isEqualTo("Ana");
+        assertThat(reserva.getDataSaidaPrevista()).isEqualTo(SAIDA);
+        assertThat(reserva.getValorDiaria()).isEqualByComparingTo("180.00");
+    }
+
+    @Test
+    void naoAlteraReservaCancelada() {
+        Reserva reserva = reserva(2);
+        reserva.cancelar(Instant.now(), "Desistência");
+
+        assertThatThrownBy(() -> reserva.alterar(quarto, "Ana", ENTRADA, SAIDA, 2, BigDecimal.TEN))
+            .isInstanceOf(RegraNegocioException.class);
     }
 
     @Test
