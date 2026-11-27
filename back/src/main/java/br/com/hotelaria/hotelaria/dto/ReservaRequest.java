@@ -11,8 +11,8 @@ import jakarta.validation.constraints.Size;
 
 /**
  * Dados para criar ou editar uma reserva. Datas no formato AAAA-MM-DD; a saída é exclusiva
- * (uma reserva de 10 a 12 ocupa as noites de 10 e 11). Sem {@code valorDiaria}, usa a diária
- * padrão do quarto no momento da gravação.
+ * (uma reserva de 10 a 12 ocupa as noites de 10 e 11). Sem {@code valorDiaria}, a criação usa a
+ * diária padrão do quarto e a edição mantém a diária já combinada.
  */
 public record ReservaRequest(
     @NotBlank(message = "Informe o nome do hóspede") @Size(max = 120) String nomeHospede,
